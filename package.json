@@ -2,7 +2,10 @@
   "name": "models",
   "version": "0.1.0",
   "description": "Models for the Classic Damage Models project",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "BABEL_ENV=client browserify -v -t babelify -t envify src/index.js -o dist/index.js"
   },
