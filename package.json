@@ -1,0 +1,27 @@
+{
+  "name": "models",
+  "version": "0.1.0",
+  "description": "Models for the Classic Damage Models project",
+  "main": "index.js",
+  "scripts": {
+    "build": "BABEL_ENV=client browserify -v -t babelify -t envify src/index.js -o dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ClassicDamageModels/models.git"
+  },
+  "author": "liekki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ClassicDamageModels/models/issues"
+  },
+  "homepage": "https://github.com/ClassicDamageModels/models#readme",
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "babelify": "^10.0.0",
+    "browserify": "^16.2.3",
+    "decimal.js": "^10.0.2",
+    "envify": "^4.1.0"
+  }
+}
