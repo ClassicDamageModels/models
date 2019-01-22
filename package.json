@@ -7,7 +7,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "BABEL_ENV=client browserify -v -t babelify -t envify src/index.js -o dist/index.js"
+    "build": "BABEL_ENV=client babel src/index.js -o dist/index.js",
+    "watch": "./node_modules/.bin/nodemon --exec babel-node test/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,11 +21,16 @@
   },
   "homepage": "https://github.com/ClassicDamageModels/models#readme",
   "dependencies": {
+    "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "babelify": "^10.0.0",
     "browserify": "^16.2.3",
     "decimal.js": "^10.0.2",
     "envify": "^4.1.0"
+  },
+  "devDependencies": {
+    "babel-register": "^6.26.0",
+    "nodemon": "^1.18.9"
   }
 }
