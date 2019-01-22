@@ -7,31 +7,31 @@ exports.default = void 0;
 
 var _lodash = _interopRequireDefault(require("lodash"));
 
-var _fire = _interopRequireDefault(require("./mage/fire"));
+var _fire = _interopRequireDefault(require("./models/mage/fire"));
 
-var _combat = _interopRequireDefault(require("./rogue/combat"));
+var _combat = _interopRequireDefault(require("./models/rogue/combat"));
 
-var _assassination = _interopRequireDefault(require("./rogue/assassination"));
+var _assassination = _interopRequireDefault(require("./models/rogue/assassination"));
 
-var _fury = _interopRequireDefault(require("./warrior/fury"));
+var _fury = _interopRequireDefault(require("./models/warrior/fury"));
 
-var _arms = _interopRequireDefault(require("./warrior/arms"));
+var _arms = _interopRequireDefault(require("./models/warrior/arms"));
 
-var _shadow = _interopRequireDefault(require("./priest/shadow"));
+var _shadow = _interopRequireDefault(require("./models/priest/shadow"));
 
-var _elemental = _interopRequireDefault(require("./shaman/elemental"));
+var _elemental = _interopRequireDefault(require("./models/shaman/elemental"));
 
-var _enhancement = _interopRequireDefault(require("./shaman/enhancement"));
+var _enhancement = _interopRequireDefault(require("./models/shaman/enhancement"));
 
-var _destruction = _interopRequireDefault(require("./warlock/destruction"));
+var _destruction = _interopRequireDefault(require("./models/warlock/destruction"));
 
-var _retribution = _interopRequireDefault(require("./paladin/retribution"));
+var _retribution = _interopRequireDefault(require("./models/paladin/retribution"));
 
-var _balance = _interopRequireDefault(require("./druid/balance"));
+var _balance = _interopRequireDefault(require("./models/druid/balance"));
 
-var _feral = _interopRequireDefault(require("./druid/feral"));
+var _feral = _interopRequireDefault(require("./models/druid/feral"));
 
-var _beastmastery = _interopRequireDefault(require("./hunter/beastmastery"));
+var _beastmastery = _interopRequireDefault(require("./models/hunter/beastmastery"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
