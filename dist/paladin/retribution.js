@@ -99,8 +99,8 @@ var _default = function _default(_ref) {
   JoC & JoB: 43% sp coefficient,
    */
 
-  var SEAL = race === 'bloodelf' ? spells.sealofblood : spells.sealofcommand;
-  var SEAL_PROCS = (SEAL === spells.sealofblood ? 1 : 7 / 60 * MH_WEAPON_SPEED) * NUM_MH_SWINGS_PER_ROTATION;
+  var SEAL = race === 'bloodelf' ? _abilities.default.sealofblood : _abilities.default.sealofcommand;
+  var SEAL_PROCS = (SEAL === _abilities.default.sealofblood ? 1 : 7 / 60 * MH_WEAPON_SPEED) * NUM_MH_SWINGS_PER_ROTATION;
   var MH_DAMAGE_SEAL = WEAPON_MAINHAND && (MH_WEAPON_DAMAGE + stats.attackpower / 14 * (WEAPON_MAINHAND.weapon_speed / 1000)) * (MH_IS_2H ? 1.06 : 1) * // Talent: Two-Handed Weapon Specialization
   1.03 * // Talent: Crusade
   1.15 * // Talent: Vengeance

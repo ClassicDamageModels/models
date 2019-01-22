@@ -128,9 +128,9 @@ export default ({
 
   */
 
-  const SEAL = race === 'bloodelf' ? spells.sealofblood : spells.sealofcommand
+  const SEAL = race === 'bloodelf' ? abilities.sealofblood : abilities.sealofcommand
   const SEAL_PROCS =
-    (SEAL === spells.sealofblood ? 1 : (7 / 60) * MH_WEAPON_SPEED) * NUM_MH_SWINGS_PER_ROTATION
+    (SEAL === abilities.sealofblood ? 1 : (7 / 60) * MH_WEAPON_SPEED) * NUM_MH_SWINGS_PER_ROTATION
 
   const MH_DAMAGE_SEAL =
     (WEAPON_MAINHAND &&
