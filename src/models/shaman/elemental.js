@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import abilities from '../abilities'
+import abilities from '../../domain/abilities'
 
 export default ({ vitals: stats, target, spec }) => {
   const LIGHTNING_OVERLOAD = _.find(spec.talents, { name: 'Lightning Overload' })

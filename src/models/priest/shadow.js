@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import abilities from '../abilities'
+import abilities from '../../domain/abilities'
 
 export default ({ vitals: stats, target, spells }) => {
   const HUMAN_FACTOR_CAST_DELAY = 0

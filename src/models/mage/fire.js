@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import abilities from '../abilities'
+import abilities from '../../domain/abilities'
 
 export default ({ spec, vitals: stats, target }) => {
   const TALENT_IGNITE = _.find(spec.talents, { name: 'Ignite', active: true })

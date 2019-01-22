@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import abilities from '../abilities'
-import { getRangedAttackTable, getArmorMultiplier } from '../utils'
+import abilities from '../../domain/abilities'
+import { getRangedAttackTable, getArmorMultiplier } from '../../utils/combat'
 
 export default ({
   vitals: stats,

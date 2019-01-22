@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { addNumbers } from 'util'
+import { addNumbers } from './misc'
 import Decimal from 'decimal.js'
 
 const clamp = (value, min, max) => Decimal.max(Decimal.min(value, max), min).toNumber()

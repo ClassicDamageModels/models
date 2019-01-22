@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import abilities from '../abilities'
+import abilities from '../../domain/abilities'
 
 export default ({ vitals: stats, target }) => {
   const HIT_CHANCE = (100 - (16 - _.clamp(stats.spellhitChance, 0, 16) + 1)) / 100
