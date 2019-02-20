@@ -12,8 +12,9 @@ var _abilities = _interopRequireDefault(require("../../domain/abilities"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var _default = function _default(_ref) {
-  var stats = _ref.stats,
+  var stats = _ref.vitals,
       target = _ref.target;
+  console.log('asdf');
   var HIT_CHANCE = (100 - (16 - _lodash.default.clamp(stats.spellhitChance, 0, 16) + 1)) / 100;
   var NUM_STARFIRES_PER_ROTATION = 4;
   var NUM_MOONFIRES_PER_ROTATION = 1;

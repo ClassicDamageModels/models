@@ -1,7 +1,8 @@
 import _ from 'lodash'
 import abilities from '../../domain/abilities'
 
-export default ({ stats, target }) => {
+export default ({ vitals: stats, target }) => {
+  console.log('asdf')
   const HIT_CHANCE = (100 - (16 - _.clamp(stats.spellhitChance, 0, 16) + 1)) / 100
 
   const NUM_STARFIRES_PER_ROTATION = 4
