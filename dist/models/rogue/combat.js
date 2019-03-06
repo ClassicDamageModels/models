@@ -53,8 +53,6 @@ var _default = function _default(_ref) {
     id: 37168
   });
 
-  console.log('SET_BONUS_TIER4_2PIECE', SET_BONUS_TIER4_2PIECE);
-  console.log('SET_BONUS_TIER4_4PIECE', SET_BONUS_TIER4_4PIECE);
   var WINDFURY_TOTEM = buffs.raid; // FIXME: Pass all buffs explicitly
 
   var SWORD_SPECIALIZATION = _lodash.default.find(spec.talents, {
@@ -76,10 +74,9 @@ var _default = function _default(_ref) {
     3: Math.floor((15 + (SET_BONUS_TIER4_2PIECE ? 3 : 0)) * 1.45),
     4: Math.floor((18 + (SET_BONUS_TIER4_2PIECE ? 3 : 0)) * 1.45),
     5: Math.floor((21 + (SET_BONUS_TIER4_2PIECE ? 3 : 0)) * 1.45)
-  };
-  console.log('SND_DURATIONS', SND_DURATIONS);
-  /* We are assuming 4s/5r rotation (100% snd uptime) */
+    /* We are assuming 4s/5r rotation (100% snd uptime) */
 
+  };
   var SND_CP = SET_BONUS_TIER4_2PIECE ? 2 : 4;
   var ROTATION_DURATION_SECONDS = SND_DURATIONS[SND_CP];
   var RUPTURE_CP = 5;
@@ -89,7 +86,6 @@ var _default = function _default(_ref) {
   var RUTHLESSNESS_CHANCE = 0.6;
   var T4_4PC_CHANCE = SET_BONUS_TIER4_4PIECE ? 0.15 : 0;
   var DISCOUNT_PER_CP = 5;
-  console.log('ROTATION_DURATION_SECONDS', ROTATION_DURATION_SECONDS);
   var MH_SWINGS_PER_ROTATION = ROTATION_DURATION_SECONDS / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE);
   var MH_ATTACKS_PER_ROTATION = MH_SWINGS_PER_ROTATION + 4 + RUPTURE_CP;
   var MH_EXTRA_ATTACKS_SWORD_SPECIALIZATION = SWORD_SPECIALIZATION_ACTIVE ? 0.05 * MH_ATTACKS_PER_ROTATION * (WINDFURY_TOTEM ? 1.2 : 1) : 0;
@@ -102,7 +98,6 @@ var _default = function _default(_ref) {
   var ENERGY_BUDGET = MAX_ENERGY + ENERGY_REGEN + ENERGY_FROM_POTENCY + ENERGY_FROM_AR;
   var ROTATION_ENERGY_CONSUMPTION = ((SND_CP - RUTHLESSNESS_CHANCE - T4_4PC_CHANCE) * SINISTER_COST + SND_COST - SND_CP * DISCOUNT_PER_CP + (RUPTURE_CP - RUTHLESSNESS_CHANCE - T4_4PC_CHANCE) * SINISTER_COST + RUPTURE_COST - RUPTURE_CP * DISCOUNT_PER_CP) / SND_DURATIONS[SND_CP];
   var EXTRA_ENERGY = (ENERGY_BUDGET - ROTATION_ENERGY_CONSUMPTION) * SND_DURATIONS[SND_CP];
-  console.log('EXTRA_ENERGY', EXTRA_ENERGY);
   var SINISTER_DAMAGE = !!WEAPON_MAINHAND && 98 + (MH_WEAPON_DAMAGE + AP_COEFFICIENT * stats.attackpower / 14) * // Talent: Murder
   1.02 * // Talent: Aggression
   1.06 * // Talent: Surprise Attacks

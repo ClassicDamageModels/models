@@ -15,11 +15,8 @@ var _default = function _default(_ref) {
   var stats = _ref.vitals,
       target = _ref.target;
   var HIT_CHANCE = (100 - (16 - _lodash.default.clamp(stats.spellhitChance, 0, 16) + 1)) / 100;
-  var CRIT_CHANCE = stats.spellcritChance / 100; // const IMPROVED_SHADOW_BOLT_UPTIME = 1 - Math.pow(1 - CRIT_CHANCE, 4)
-  // console.log('IMPROVED_SHADOW_BOLT_UPTIME', IMPROVED_SHADOW_BOLT_UPTIME)
-
+  var CRIT_CHANCE = stats.spellcritChance / 100;
   var DAMAGE_MULTIPLIER = 1 * 1.15 * // Talent: Demonic Sacrifice
-  // (1 + 0.2 * IMPROVED_SHADOW_BOLT_UPTIME) *
   target.multipliers.shadow; // Includes Misery
 
   var SHADOW_BOLT_CAST_TIME = _abilities.default.shadowbolt.castTime / (1 + stats.spellhaste / 100);

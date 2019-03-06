@@ -14,7 +14,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var _default = function _default(_ref) {
   var stats = _ref.vitals,
       target = _ref.target;
-  console.log('asdf');
   var HIT_CHANCE = (100 - (16 - _lodash.default.clamp(stats.spellhitChance, 0, 16) + 1)) / 100;
   var NUM_STARFIRES_PER_ROTATION = 4;
   var NUM_MOONFIRES_PER_ROTATION = 1;
@@ -37,9 +36,7 @@ var _default = function _default(_ref) {
   var MOONFIRE_DPS = (MOONFIRE_HIT_COMPONENT + MOONFIRE_CRIT_COMPONENT) / ROTATION_DURATION_SECONDS;
   var MOONFIRE_DOT_DAMAGE = (_abilities.default.moonfire.dot.damage + _abilities.default.moonfire.dot.coefficient * stats.spelldamage) * DAMAGE_MULTIPLIER;
   var MOONFIRE_DOT_COMPONENT = HIT_CHANCE * MOONFIRE_DOT_DAMAGE;
-  var MOONFIRE_DOT_DPS = MOONFIRE_DOT_COMPONENT / ROTATION_DURATION_SECONDS; // console.log('MOONFIRE_DAMAGE', MOONFIRE_DAMAGE)
-  // console.log('STARFIRE_DAMAGE', STARFIRE_DAMAGE)
-
+  var MOONFIRE_DOT_DPS = MOONFIRE_DOT_COMPONENT / ROTATION_DURATION_SECONDS;
   return [{
     source: _abilities.default.starfire,
     dps: STARFIRE_DPS
