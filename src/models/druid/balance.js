@@ -2,7 +2,6 @@ import _ from 'lodash'
 import abilities from '../../domain/abilities'
 
 export default ({ vitals: stats, target }) => {
-  console.log('asdf')
   const HIT_CHANCE = (100 - (16 - _.clamp(stats.spellhitChance, 0, 16) + 1)) / 100
 
   const NUM_STARFIRES_PER_ROTATION = 4
@@ -57,9 +56,6 @@ export default ({ vitals: stats, target }) => {
   const MOONFIRE_DOT_COMPONENT = HIT_CHANCE * MOONFIRE_DOT_DAMAGE
 
   const MOONFIRE_DOT_DPS = MOONFIRE_DOT_COMPONENT / ROTATION_DURATION_SECONDS
-
-  // console.log('MOONFIRE_DAMAGE', MOONFIRE_DAMAGE)
-  // console.log('STARFIRE_DAMAGE', STARFIRE_DAMAGE)
 
   return [
     {

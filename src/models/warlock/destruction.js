@@ -5,13 +5,9 @@ export default ({ vitals: stats, target }) => {
   const HIT_CHANCE = (100 - (16 - _.clamp(stats.spellhitChance, 0, 16) + 1)) / 100
   const CRIT_CHANCE = stats.spellcritChance / 100
 
-  // const IMPROVED_SHADOW_BOLT_UPTIME = 1 - Math.pow(1 - CRIT_CHANCE, 4)
-  // console.log('IMPROVED_SHADOW_BOLT_UPTIME', IMPROVED_SHADOW_BOLT_UPTIME)
-
   const DAMAGE_MULTIPLIER =
     1 *
     1.15 * // Talent: Demonic Sacrifice
-    // (1 + 0.2 * IMPROVED_SHADOW_BOLT_UPTIME) *
     target.multipliers.shadow // Includes Misery
 
   const SHADOW_BOLT_CAST_TIME = abilities.shadowbolt.castTime / (1 + stats.spellhaste / 100)

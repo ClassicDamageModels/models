@@ -33,9 +33,6 @@ export default ({
   // T4 4-piece: Your finishing moves have a 15% chance to grant you a combo point.
   const SET_BONUS_TIER4_4PIECE = _.find(spells, { id: 37168 })
 
-  console.log('SET_BONUS_TIER4_2PIECE', SET_BONUS_TIER4_2PIECE)
-  console.log('SET_BONUS_TIER4_4PIECE', SET_BONUS_TIER4_4PIECE)
-
   const WINDFURY_TOTEM = buffs.raid // FIXME: Pass all buffs explicitly
 
   const SWORD_SPECIALIZATION = _.find(spec.talents, { name: 'Sword Specialization' })
@@ -65,8 +62,6 @@ export default ({
     5: Math.floor((21 + (SET_BONUS_TIER4_2PIECE ? 3 : 0)) * 1.45)
   }
 
-  console.log('SND_DURATIONS', SND_DURATIONS)
-
   /* We are assuming 4s/5r rotation (100% snd uptime) */
   const SND_CP = SET_BONUS_TIER4_2PIECE ? 2 : 4
   const ROTATION_DURATION_SECONDS = SND_DURATIONS[SND_CP]
@@ -77,8 +72,6 @@ export default ({
   const RUTHLESSNESS_CHANCE = 0.6
   const T4_4PC_CHANCE = SET_BONUS_TIER4_4PIECE ? 0.15 : 0
   const DISCOUNT_PER_CP = 5
-
-  console.log('ROTATION_DURATION_SECONDS', ROTATION_DURATION_SECONDS)
 
   const MH_SWINGS_PER_ROTATION =
     ROTATION_DURATION_SECONDS / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE)
@@ -118,7 +111,6 @@ export default ({
     SND_DURATIONS[SND_CP]
 
   const EXTRA_ENERGY = (ENERGY_BUDGET - ROTATION_ENERGY_CONSUMPTION) * SND_DURATIONS[SND_CP]
-  console.log('EXTRA_ENERGY', EXTRA_ENERGY)
 
   const SINISTER_DAMAGE =
     (!!WEAPON_MAINHAND &&

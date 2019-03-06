@@ -56,14 +56,11 @@ export default ({
 
   const MH_WEAPON_SPEED =
     (WEAPON_MAINHAND && WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE) || 1
-  // console.log(WEAPON_MAINHAND)
 
   const SLAM_IN_ROTATION = (WEAPON_MAINHAND && WEAPON_MAINHAND.type === '2H weapon') || false
   // Delay between auto attack & slam
   const SLAM_DELAY_SECONDS = 0.05
   const SLAM_CAST_TIME_SECONDS = 0.5
-
-  // console.log('SLAM_IN_ROTATION', SLAM_IN_ROTATION)
 
   const MH_WEAPON_DAMAGE =
     (WEAPON_MAINHAND && (WEAPON_MAINHAND.dmg_min + WEAPON_MAINHAND.dmg_max) / 2) || 0
@@ -141,10 +138,6 @@ export default ({
   const MH_EXTRA_ATTACKS_WINDFURY_TOTEM = WINDFURY_TOTEM
     ? 0.2 * NUM_MH_ATTACKS_PER_ROTATION * (MH_SWORD_SPECIALIZATION ? 1.05 : 1)
     : 0
-
-  // console.log('NUM_MH_ATTACKS_PER_ROTATION', NUM_MH_ATTACKS_PER_ROTATION)
-  // console.log('MH_EXTRA_ATTACKS_SWORD_SPECIALIZATION', MH_EXTRA_ATTACKS_SWORD_SPECIALIZATION)
-  // console.log('MH_EXTRA_ATTACKS_WINDFURY_TOTEM', MH_EXTRA_ATTACKS_WINDFURY_TOTEM)
 
   // White dps must be adjusted for the time we are casting slam and the
   // amount of time we are clipping from the white swings before starting Slam
@@ -301,10 +294,6 @@ export default ({
     0
   )
 
-  console.log('NUM_MS_PER_ROTATION', NUM_MS_PER_ROTATION)
-  console.log('NUM_WW_PER_ROTATION', NUM_WW_PER_ROTATION)
-  console.log('NUM_HEROIC_STRIKES_PER_ROTATION', NUM_HEROIC_STRIKES_PER_ROTATION)
-
   // Any Heroic Strikes take away from white swings so we have to adjust
   const MH_WHITE_CONTRIBUTION = 1 - NUM_HEROIC_STRIKES_PER_ROTATION / NUM_MH_SWINGS_PER_ROTATION
   const MH_WHITE_DPS_ADJUSTED_FOR_HS = MH_WHITE_DPS * MH_WHITE_CONTRIBUTION
@@ -337,10 +326,6 @@ export default ({
     OH_WHITE_DPS +
     OH_WHITE_DPS_EXTRA_ATTACKS_SWORD_SPECIALIZATION
 
-  // console.log('RAGE_BUDGET', RAGE_BUDGET)
-  // console.log('ROTATION RAGE COST', ROTATION_RAGE_COST)
-  // console.log('NUM_MH_SWINGS_PER_ROTATION', NUM_MH_SWINGS_PER_ROTATION)
-
   const YELLOW_HIT_CHANCE =
     1 - ATTACK_TABLE_YELLOW.miss - ATTACK_TABLE_YELLOW.dodge - ATTACK_TABLE_YELLOW.parry
 
@@ -354,8 +339,6 @@ export default ({
 
   const SLAM_CRIT_DAMAGE = SLAM_DAMAGE * 2 * 1.2
 
-  // console.log('SLAM_DAMAGE', SLAM_DAMAGE)
-
   const SLAM_HIT_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * SLAM_DAMAGE
   const SLAM_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW.crit * SLAM_CRIT_DAMAGE
 
@@ -368,8 +351,6 @@ export default ({
     (MH_WEAPON_DAMAGE + (AP_COEFFICIENT * stats.attackpower) / 14) *
       ARMOR_MULTIPLIER *
       target.multipliers.physical
-
-  // console.log('ARMOR_MULTIPLIER', getArmorMultiplier(6792))
 
   const HEROIC_STRIKE_CRIT_DAMAGE =
     HEROIC_STRIKE_DAMAGE *
@@ -438,12 +419,6 @@ export default ({
       NUM_WW_PER_ROTATION) /
     ROTATION_DURATION_SECONDS
 
-  // console.log('HITS_PER_SECOND', HITS_PER_SECOND)
-  // console.log('NUM_MH_SWINGS_PER_ROTATION', NUM_MH_SWINGS_PER_ROTATION)
-  // console.log('NUM_OH_SWINGS_PER_ROTATION', NUM_OH_SWINGS_PER_ROTATION)
-  // console.log('NUM_MS_PER_ROTATION', NUM_MS_PER_ROTATION)
-  // console.log('NUM_WW_PER_ROTATION', NUM_WW_PER_ROTATION)
-
   // Chance that after a crit we get four ticks means no crits for 12 seconds
   const DEEP_WOUNDS_P4 = Math.pow(1 - stats.critChance / 100, 12 * HITS_PER_SECOND)
   // Exactly three ticks: 9 seconds of no crits minus P4
@@ -453,23 +428,14 @@ export default ({
   // Exactly one tick: 3 seconds no crits minus P2
   const DEEP_WOUNDS_P1 = Math.pow(1 - stats.critChance / 100, 3 * HITS_PER_SECOND) - DEEP_WOUNDS_P2
 
-  // console.log('DEEP_WOUNDS_P1', DEEP_WOUNDS_P1)
-  // console.log('DEEP_WOUNDS_P2', DEEP_WOUNDS_P2)
-  // console.log('DEEP_WOUNDS_P3', DEEP_WOUNDS_P3)
-  // console.log('DEEP_WOUNDS_P4', DEEP_WOUNDS_P4)
-
   const DEEP_WOUNDS_AVERAGE_TICKS_PER_CRIT =
     DEEP_WOUNDS_P1 + 2 * DEEP_WOUNDS_P2 + 3 * DEEP_WOUNDS_P3 + 4 * DEEP_WOUNDS_P4
-
-  // console.log('DEEP_WOUNDS_AVERAGE_TICKS_PER_CRIT', DEEP_WOUNDS_AVERAGE_TICKS_PER_CRIT)
 
   const DEEP_WOUNDS_TICKS_PER_ROTATION =
     HITS_PER_SECOND *
     ROTATION_DURATION_SECONDS *
     (stats.critChance / 100) *
     DEEP_WOUNDS_AVERAGE_TICKS_PER_CRIT
-
-  // console.log('DEEP_WOUNDS_TICKS_PER_ROTATION', DEEP_WOUNDS_TICKS_PER_ROTATION)
 
   const DEEP_WOUNDS_TICK_DAMAGE =
     (WEAPON_MAINHAND &&
@@ -480,14 +446,6 @@ export default ({
 
   const DEEP_WOUNDS_DPS =
     (DEEP_WOUNDS_TICKS_PER_ROTATION * DEEP_WOUNDS_TICK_DAMAGE) / ROTATION_DURATION_SECONDS
-
-  // console.log('DEEP_WOUNDS_TICK_DAMAGE', DEEP_WOUNDS_TICK_DAMAGE)
-
-  // console.log(
-  //   'CRITS_IN_ROTATION',
-  //   HITS_PER_SECOND * ROTATION_DURATION_SECONDS * (stats.critChance / 100)
-  // )
-  // console.log('DEEP_WOUNDS_TICKS_PER_ROTATION', DEEP_WOUNDS_TICKS_PER_ROTATION)
 
   const segments = [
     {

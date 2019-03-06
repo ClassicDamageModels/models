@@ -35,13 +35,9 @@ export default ({
   // T4 4-piece: You gain an additional 2 rage each time one of your attacks is parried or dodged.
   const SET_BONUS_TIER4_4PIECE = _.find(spells, { id: 37519 })
 
-  // console.log('FLURRY_UPTIME', FLURRY_UPTIME)
-
   const AP_COEFFICIENT = (WEAPON_MAINHAND && getAPCoefficient(WEAPON_MAINHAND)) || 0
 
   const BONUS_HASTE = 1 + 0.25 * FLURRY_UPTIME
-
-  // console.log('BONUS_HASTE', BONUS_HASTE)
 
   const TOTAL_HASTE = (1 + stats.haste / 100) * BONUS_HASTE
 
@@ -119,8 +115,6 @@ export default ({
   const RAGE_PER_SECOND_UNBRIDLED_WRATH =
     RAGE_PER_SECOND_UNBRIDLED_WRATH_MH + RAGE_PER_SECOND_UNBRIDLED_WRATH_OH
 
-  // console.log('RAGE_PER_SECOND_UNBRIDLED_WRATH', RAGE_PER_SECOND_UNBRIDLED_WRATH)
-
   const RAGE_PER_SECOND_BLOODRAGE = 20 / 60
   const RAGE_PER_SECOND_ANGER_MANAGEMENT = 1 / 3
 
@@ -158,8 +152,6 @@ export default ({
   const RAGE_PER_SECOND_WINDFURY =
     (MH_EXTRA_ATTACKS_WINDFURY_TOTEM * RAGE_MH) / ROTATION_DURATION_SECONDS
 
-  // console.log('RAGE_PER_SECOND_MH', RAGE_PER_SECOND_MH)
-
   const RAGE_OH =
     (WEAPON_OFFHAND &&
       ATTACK_TABLE_WHITE.hit *
@@ -186,9 +178,6 @@ export default ({
     0
   const RAGE_PER_SECOND_OH =
     (WEAPON_OFFHAND && RAGE_OH / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE)) || 0
-
-  // console.log('RAGE_PER_SECOND_MH', RAGE_PER_SECOND_MH)
-  // console.log('RAGE_PER_SECOND_OH', RAGE_PER_SECOND_OH)
 
   const NUM_DODGES_PER_ROTATION = NUM_MH_SWINGS_PER_ROTATION + NUM_OH_SWINGS_PER_ROTATION + 3 + 2
   const RAGE_PER_SECOND_T4_4PC = SET_BONUS_TIER4_4PIECE
@@ -217,17 +206,11 @@ export default ({
 
   const LEFTOVER_RAGE = RAGE_BUDGET - ROTATION_RAGE_COST
 
-  // console.log('LEFTOVER_RAGE', LEFTOVER_RAGE)
-
   const NUM_WW_PER_ROTATION = _.clamp(LEFTOVER_RAGE / WHIRLWIND_RAGE_COST, 0, 2)
-
-  // console.log('NUM_WW_PER_ROTATION', NUM_WW_PER_ROTATION)
 
   // Improved Heroic Strike
   const HEROIC_STRIKE_RAGE_COST = 15 - 3
 
-  // console.log('LEFTOVER_RAGE', LEFTOVER_RAGE)
-  // console.log('NUM_MH_SWINGS_PER_ROTATION', NUM_MH_SWINGS_PER_ROTATION)
   // How many HS's can we perform with the leftover rage
   const NUM_HEROIC_STRIKES_PER_ROTATION = _.clamp(
     (LEFTOVER_RAGE - NUM_WW_PER_ROTATION * WHIRLWIND_RAGE_COST) /
@@ -249,11 +232,6 @@ export default ({
 
   const WHITE_DPS =
     MH_WHITE_DPS_ADJUSTED_FOR_HS + MH_WHITE_DPS_EXTRA_ATTACKS_WINDFURY_TOTEM + OH_WHITE_DPS
-
-  // console.log('RAGE_BUDGET', RAGE_BUDGET)
-  // console.log('ROTATION RAGE COST', ROTATION_RAGE_COST)
-  // console.log('NUM_HEROIC_STRIKES', NUM_HEROIC_STRIKES_PER_ROTATION)
-  // console.log('NUM_MH_SWINGS_PER_ROTATION', NUM_MH_SWINGS_PER_ROTATION)
 
   const YELLOW_HIT_CHANCE =
     1 - ATTACK_TABLE_YELLOW.miss - ATTACK_TABLE_YELLOW.dodge - ATTACK_TABLE_YELLOW.parry
@@ -310,10 +288,6 @@ export default ({
     (NUM_WW_PER_ROTATION * (WHIRLWIND_COMPONENT + WHIRLWIND_CRIT_COMPONENT)) /
     ROTATION_DURATION_SECONDS
 
-  // console.log('MH DAMAGE RANGE', WEAPON_MAINHAND.dmg_min + WEAPON_MAINHAND.dmg_max / 2)
-  // console.log('AP BONUS', (AP_COEFFICIENT * stats.attackpower) / 14)
-  // console.log('HEROIC_STRIKE_DAMAGE', HEROIC_STRIKE_DAMAGE)
-
   const HITS_PER_SECOND = (NUM_MH_SWINGS_PER_ROTATION + NUM_OH_SWINGS_PER_ROTATION + 3 + 2) / 18
   // Chance that after a crit we get four ticks means no crits for 12 seconds
   const DEEP_WOUNDS_P4 = Math.pow(1 - stats.critChance / 100, 12 * HITS_PER_SECOND)
@@ -323,11 +297,6 @@ export default ({
   const DEEP_WOUNDS_P2 = Math.pow(1 - stats.critChance / 100, 6 * HITS_PER_SECOND) - DEEP_WOUNDS_P3
   // Exactly one tick: 3 seconds no crits minus P2
   const DEEP_WOUNDS_P1 = Math.pow(1 - stats.critChance / 100, 3 * HITS_PER_SECOND) - DEEP_WOUNDS_P2
-
-  // console.log('DEEP_WOUNDS_P1', DEEP_WOUNDS_P1)
-  // console.log('DEEP_WOUNDS_P2', DEEP_WOUNDS_P2)
-  // console.log('DEEP_WOUNDS_P3', DEEP_WOUNDS_P3)
-  // console.log('DEEP_WOUNDS_P4', DEEP_WOUNDS_P4)
 
   const DEEP_WOUNDS_AVERAGE_TICKS_PER_CRIT =
     DEEP_WOUNDS_P1 + 2 * DEEP_WOUNDS_P2 + 3 * DEEP_WOUNDS_P3 + 4 * DEEP_WOUNDS_P4
@@ -344,14 +313,6 @@ export default ({
 
   const DEEP_WOUNDS_DPS =
     (DEEP_WOUNDS_TICKS_PER_ROTATION * DEEP_WOUNDS_TICK_DAMAGE) / ROTATION_DURATION_SECONDS
-
-  // console.log('DEEP_WOUNDS_TICK_DAMAGE', DEEP_WOUNDS_TICK_DAMAGE)
-
-  // console.log(
-  //   'CRITS_IN_ROTATION',
-  //   HITS_PER_SECOND * ROTATION_DURATION_SECONDS * (stats.critChance / 100)
-  // )
-  // console.log('DEEP_WOUNDS_TICKS_PER_ROTATION', DEEP_WOUNDS_TICKS_PER_ROTATION)
 
   const segments = [
     {
