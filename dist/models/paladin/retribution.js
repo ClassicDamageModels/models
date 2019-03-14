@@ -131,12 +131,15 @@ var _default = function _default(_ref) {
   var JUDGEMENT_DAMAGE = (SEAL === _abilities.default.sealofblood ? (331 + 362) / 2 + 0.43 * stats.spelldamage : (228 + 252) / 2 + 0.43 * stats.spelldamage) * 1.14 * // Talent: Sanctity Aura (Improved)
   1.15; // Talent: Vengeance
 
-  var JUDGEMENT_ATTACK_TABLE = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND], {
+  var _getAttackTable5 = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND], {
     critChance: 15,
     // Talent: Fanaticism
     expertise: 100 // Judgement can only resist (meaning miss)
 
-  });
+  }),
+      _getAttackTable6 = _slicedToArray(_getAttackTable5, 1),
+      JUDGEMENT_ATTACK_TABLE = _getAttackTable6[0];
+
   var JUDGEMENT_HIT_CHANCE = 1 - JUDGEMENT_ATTACK_TABLE.miss - JUDGEMENT_ATTACK_TABLE.dodge - JUDGEMENT_ATTACK_TABLE.parry;
   var JUDGEMENT_HIT_COMPONENT = JUDGEMENT_HIT_CHANCE * (1 - JUDGEMENT_ATTACK_TABLE.crit) * JUDGEMENT_DAMAGE;
   var JUDGEMENT_CRIT_COMPONENT = JUDGEMENT_HIT_CHANCE * JUDGEMENT_ATTACK_TABLE.crit * JUDGEMENT_DAMAGE * 2;

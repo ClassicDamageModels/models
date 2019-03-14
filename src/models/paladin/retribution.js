@@ -171,7 +171,7 @@ export default ({
     1.14 * // Talent: Sanctity Aura (Improved)
     1.15 // Talent: Vengeance
 
-  const JUDGEMENT_ATTACK_TABLE = getAttackTable('yellow', stats, [WEAPON_MAINHAND], {
+  const [JUDGEMENT_ATTACK_TABLE] = getAttackTable('yellow', stats, [WEAPON_MAINHAND], {
     critChance: 15, // Talent: Fanaticism
     expertise: 100 // Judgement can only resist (meaning miss)
   })
