@@ -17,6 +17,14 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var _default = function _default(_ref) {
   var stats = _ref.vitals,
       target = _ref.target,
@@ -56,8 +64,14 @@ var _default = function _default(_ref) {
     id: 37519
   });
 
-  var ATTACK_TABLE_WHITE = (0, _combat.getAttackTable)('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]);
-  var ATTACK_TABLE_YELLOW = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]);
+  var _getAttackTable = (0, _combat.getAttackTable)('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]),
+      _getAttackTable2 = _slicedToArray(_getAttackTable, 1),
+      ATTACK_TABLE_WHITE = _getAttackTable2[0];
+
+  var _getAttackTable3 = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]),
+      _getAttackTable4 = _slicedToArray(_getAttackTable3, 1),
+      ATTACK_TABLE_YELLOW = _getAttackTable4[0];
+
   var FLURRY_UPTIME = 1 - Math.pow(1 - ATTACK_TABLE_WHITE.crit, 4);
   var AP_COEFFICIENT = WEAPON_MAINHAND && (0, _combat.getAPCoefficient)(WEAPON_MAINHAND) || 0;
   var BONUS_HASTE = 1 + 0.15 * FLURRY_UPTIME;

@@ -17,6 +17,14 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var _default = function _default(_ref) {
   var spec = _ref.spec,
       stats = _ref.vitals,
@@ -48,10 +56,18 @@ var _default = function _default(_ref) {
     id: 37224
   });
 
-  var ATTACK_TABLE_WHITE = (0, _combat.getAttackTable)('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]);
-  var ATTACK_TABLE_YELLOW = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]);
+  var _getAttackTable = (0, _combat.getAttackTable)('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]),
+      _getAttackTable2 = _slicedToArray(_getAttackTable, 2),
+      ATTACK_TABLE_WHITE_MH = _getAttackTable2[0],
+      ATTACK_TABLE_WHITE_OH = _getAttackTable2[1];
+
+  var _getAttackTable3 = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]),
+      _getAttackTable4 = _slicedToArray(_getAttackTable3, 2),
+      ATTACK_TABLE_YELLOW_MH = _getAttackTable4[0],
+      ATTACK_TABLE_YELLOW_OH = _getAttackTable4[1];
+
   var SPELL_HIT_CHANCE = (100 - (16 - _lodash.default.clamp(stats.spellhitChance, 0, 16) + 1)) / 100;
-  var FLURRY_UPTIME = 1 - Math.pow(1 - ATTACK_TABLE_WHITE.crit, 4);
+  var FLURRY_UPTIME = 1 - Math.pow(1 - ATTACK_TABLE_WHITE_MH.crit, 4);
   var AP_COEFFICIENT = WEAPON_MAINHAND && (0, _combat.getAPCoefficient)(WEAPON_MAINHAND) || 0;
   var BONUS_HASTE = 1 + 0.25 * FLURRY_UPTIME;
   var TOTAL_HASTE = (1 + stats.haste / 100) * BONUS_HASTE;
@@ -70,9 +86,9 @@ var _default = function _default(_ref) {
   var OH_DAMAGE = WEAPON_OFFHAND && (OH_WEAPON_DAMAGE + stats.attackpower / 14 * (WEAPON_OFFHAND.weapon_speed / 1000)) * 1.1 * // Talent: Weapon Mastery
   ARMOR_MULTIPLIER * target.multipliers.physical * 0.5 || 0;
   var OH_CRIT_DAMAGE = OH_DAMAGE * 2;
-  var MH_WHITE_COMPONENT = ATTACK_TABLE_WHITE.hit * MH_DAMAGE + ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * MH_CRIT_DAMAGE;
+  var MH_WHITE_COMPONENT = ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE + ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_MH.crit * MH_CRIT_DAMAGE;
   var MH_WHITE_DPS = WEAPON_MAINHAND && MH_WHITE_COMPONENT / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE) || 0;
-  var OH_WHITE_COMPONENT = ATTACK_TABLE_WHITE.hit * OH_DAMAGE + ATTACK_TABLE_WHITE.glance * OH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * OH_CRIT_DAMAGE;
+  var OH_WHITE_COMPONENT = ATTACK_TABLE_WHITE_OH.hit * OH_DAMAGE + ATTACK_TABLE_WHITE_OH.glance * OH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_OH.crit * OH_CRIT_DAMAGE;
   var OH_WHITE_DPS = WEAPON_OFFHAND && OH_WHITE_COMPONENT / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE) || 0;
   /* Windfury Weapon
      Imbue the Shaman's weapon with wind. Each hit has a 20% chance of dealing
@@ -90,11 +106,11 @@ var _default = function _default(_ref) {
   ARMOR_MULTIPLIER * target.multipliers.physical;
   var OH_WINDFURY_DAMAGE = (OH_WEAPON_DAMAGE * 0.5 + AP_COEFFICIENT * (stats.attackpower + 445 * 1.4) / 14) * 1.1 * // Talent: Weapon Mastery
   ARMOR_MULTIPLIER * target.multipliers.physical;
-  var YELLOW_HIT_CHANCE = 1 - ATTACK_TABLE_YELLOW.miss - ATTACK_TABLE_YELLOW.dodge - ATTACK_TABLE_YELLOW.parry;
-  var MH_WINDFURY_HIT_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * MH_WINDFURY_DAMAGE;
-  var OH_WINDFURY_HIT_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * OH_WINDFURY_DAMAGE;
-  var MH_WINDFURY_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW.crit * MH_WINDFURY_DAMAGE * 2;
-  var OH_WINDFURY_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW.crit * OH_WINDFURY_DAMAGE * 2;
+  var YELLOW_HIT_CHANCE = 1 - ATTACK_TABLE_YELLOW_MH.miss - ATTACK_TABLE_YELLOW_MH.dodge - ATTACK_TABLE_YELLOW_MH.parry;
+  var MH_WINDFURY_HIT_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_MH.crit) * MH_WINDFURY_DAMAGE;
+  var OH_WINDFURY_HIT_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_OH.crit) * OH_WINDFURY_DAMAGE;
+  var MH_WINDFURY_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_MH.crit * MH_WINDFURY_DAMAGE * 2;
+  var OH_WINDFURY_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_OH.crit * OH_WINDFURY_DAMAGE * 2;
   var MH_WINDFURY_DPS = MH_EXTRA_ATTACKS_WINDFURY_TOTEM * (MH_WINDFURY_HIT_COMPONENT + MH_WINDFURY_CRIT_COMPONENT) * 2 / ROTATION_DURATION_SECONDS;
   var OH_WINDFURY_DPS = OH_EXTRA_ATTACKS_WINDFURY_TOTEM * (OH_WINDFURY_HIT_COMPONENT + OH_WINDFURY_CRIT_COMPONENT) * 2 / ROTATION_DURATION_SECONDS;
   var WHITE_DPS = MH_WHITE_DPS + OH_WHITE_DPS + MH_WINDFURY_DPS + OH_WINDFURY_DPS;
@@ -107,10 +123,10 @@ var _default = function _default(_ref) {
   Instantly attack with both weapons. In addition, the next 2 sources of Nature damage dealt to the target are increased by 20%. Lasts 12sec.
     */
 
-  var STORMSTRIKE_HIT_COMPONENT_MH = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * (MH_DAMAGE + (SET_BONUS_TIER4_4PIECE ? 30 : 0));
-  var STORMSTRIKE_CRIT_COMPONENT_MH = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW.crit * (MH_DAMAGE + (SET_BONUS_TIER4_4PIECE ? 30 : 0)) * 2;
-  var STORMSTRIKE_HIT_COMPONENT_OH = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * (OH_DAMAGE + (SET_BONUS_TIER4_4PIECE ? 30 : 0));
-  var STORMSTRIKE_CRIT_COMPONENT_OH = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW.crit * (OH_DAMAGE + (SET_BONUS_TIER4_4PIECE ? 30 : 0)) * 2;
+  var STORMSTRIKE_HIT_COMPONENT_MH = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_MH.crit) * (MH_DAMAGE + (SET_BONUS_TIER4_4PIECE ? 30 : 0));
+  var STORMSTRIKE_CRIT_COMPONENT_MH = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_MH.crit * (MH_DAMAGE + (SET_BONUS_TIER4_4PIECE ? 30 : 0)) * 2;
+  var STORMSTRIKE_HIT_COMPONENT_OH = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_OH.crit) * (OH_DAMAGE + (SET_BONUS_TIER4_4PIECE ? 30 : 0));
+  var STORMSTRIKE_CRIT_COMPONENT_OH = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_OH.crit * (OH_DAMAGE + (SET_BONUS_TIER4_4PIECE ? 30 : 0)) * 2;
   var STORMSTRIKE_DPS = 3 * (STORMSTRIKE_HIT_COMPONENT_MH + STORMSTRIKE_CRIT_COMPONENT_MH + STORMSTRIKE_HIT_COMPONENT_OH + STORMSTRIKE_CRIT_COMPONENT_OH) / ROTATION_DURATION_SECONDS;
   return [{
     source: {

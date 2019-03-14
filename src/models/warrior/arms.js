@@ -41,8 +41,8 @@ export default ({
   // T4 4-piece: You gain an additional 2 rage each time one of your attacks is parried or dodged.
   const SET_BONUS_TIER4_4PIECE = _.find(spells, { id: 37519 })
 
-  const ATTACK_TABLE_WHITE = getAttackTable('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
-  const ATTACK_TABLE_YELLOW = getAttackTable('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
+  const [ATTACK_TABLE_WHITE] = getAttackTable('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
+  const [ATTACK_TABLE_YELLOW] = getAttackTable('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
 
   const FLURRY_UPTIME = 1 - Math.pow(1 - ATTACK_TABLE_WHITE.crit, 4)
 

@@ -17,6 +17,14 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var _default = function _default(_ref) {
   var stats = _ref.vitals,
       target = _ref.target,
@@ -44,9 +52,16 @@ var _default = function _default(_ref) {
   var FIGHT_DURATION_SECONDS = 5 * 60;
   var WINDFURY_TOTEM = buffs.raid; // FIXME: Pass all buffs explicitly
 
-  var ATTACK_TABLE_WHITE = (0, _combat.getAttackTable)('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]);
-  var ATTACK_TABLE_YELLOW = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]);
-  var FLURRY_UPTIME = 1 - Math.pow(1 - ATTACK_TABLE_WHITE.crit, 4); // T4 2-piece: Your Whirlwind ability costs 5 less rage.
+  var _getAttackTable = (0, _combat.getAttackTable)('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]),
+      _getAttackTable2 = _slicedToArray(_getAttackTable, 2),
+      ATTACK_TABLE_WHITE_MH = _getAttackTable2[0],
+      ATTACK_TABLE_WHITE_OH = _getAttackTable2[1];
+
+  var _getAttackTable3 = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]),
+      _getAttackTable4 = _slicedToArray(_getAttackTable3, 1),
+      ATTACK_TABLE_YELLOW_MH = _getAttackTable4[0];
+
+  var FLURRY_UPTIME = 1 - Math.pow(1 - ATTACK_TABLE_WHITE_MH.crit, 4); // T4 2-piece: Your Whirlwind ability costs 5 less rage.
 
   var SET_BONUS_TIER4_2PIECE = _lodash.default.find(spells, {
     id: 37518
@@ -73,10 +88,10 @@ var _default = function _default(_ref) {
 
   var OH_DAMAGE = WEAPON_OFFHAND && (OH_WEAPON_DAMAGE + stats.attackpower / 14 * (WEAPON_OFFHAND.weapon_speed / 1000)) * ARMOR_MULTIPLIER * target.multipliers.physical || 0;
   var OH_CRIT_DAMAGE = OH_DAMAGE * 2;
-  var MH_WHITE_COMPONENT = ATTACK_TABLE_WHITE.hit * MH_DAMAGE + ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * MH_CRIT_DAMAGE;
+  var MH_WHITE_COMPONENT = ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE + ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_MH.crit * MH_CRIT_DAMAGE;
   var MH_WHITE_DPS = WEAPON_MAINHAND && MH_WHITE_COMPONENT / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE) || 0;
   var MH_EXTRA_ATTACKS_WINDFURY_TOTEM = WINDFURY_TOTEM ? 0.2 * NUM_MH_SWINGS_PER_ROTATION : 0;
-  var OH_WHITE_COMPONENT = (ATTACK_TABLE_WHITE.hit * OH_DAMAGE + ATTACK_TABLE_WHITE.glance * OH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * OH_CRIT_DAMAGE) * 0.625;
+  var OH_WHITE_COMPONENT = (ATTACK_TABLE_WHITE_OH.hit * OH_DAMAGE + ATTACK_TABLE_WHITE_OH.glance * OH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_OH.crit * OH_CRIT_DAMAGE) * 0.625;
   var OH_WHITE_DPS = WEAPON_OFFHAND && OH_WHITE_COMPONENT / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE) || 0;
   var UNBRIDLED_WRATH_POINTS = 5;
   var RAGE_PER_SECOND_UNBRIDLED_WRATH_MH = WEAPON_MAINHAND && 3 * UNBRIDLED_WRATH_POINTS / 60 * (WEAPON_MAINHAND.weapon_speed / 1000) / (WEAPON_MAINHAND.weapon_speed / 1000) || 0;
@@ -86,10 +101,10 @@ var _default = function _default(_ref) {
   var RAGE_PER_SECOND_ANGER_MANAGEMENT = 1 / 3; // const c = 0.0091107836 * Math.pow(70, 2) + 3.225598133 * 70 + 4.2652911 => 274.7
 
   var RAGE_CONVERSION_VALUE = 274.7;
-  var RAGE_MH = WEAPON_MAINHAND && ATTACK_TABLE_WHITE.hit * _lodash.default.clamp(15 * MH_DAMAGE / (4 * RAGE_CONVERSION_VALUE) + 3.5 * WEAPON_MAINHAND.weapon_speed / 1000 / 2, 0, 15 * MH_DAMAGE / RAGE_CONVERSION_VALUE) + ATTACK_TABLE_WHITE.glance * _lodash.default.clamp(15 * MH_DAMAGE * 0.65 / (4 * RAGE_CONVERSION_VALUE) + 3.5 * WEAPON_MAINHAND.weapon_speed / 1000 / 2, 0, 15 * MH_DAMAGE / RAGE_CONVERSION_VALUE) + ATTACK_TABLE_WHITE.crit * _lodash.default.clamp(15 * MH_CRIT_DAMAGE / (4 * RAGE_CONVERSION_VALUE) + 7 * WEAPON_MAINHAND.weapon_speed / 1000 / 2, 0, 15 * MH_DAMAGE / RAGE_CONVERSION_VALUE) || 0;
+  var RAGE_MH = WEAPON_MAINHAND && ATTACK_TABLE_WHITE_MH.hit * _lodash.default.clamp(15 * MH_DAMAGE / (4 * RAGE_CONVERSION_VALUE) + 3.5 * WEAPON_MAINHAND.weapon_speed / 1000 / 2, 0, 15 * MH_DAMAGE / RAGE_CONVERSION_VALUE) + ATTACK_TABLE_WHITE_MH.glance * _lodash.default.clamp(15 * MH_DAMAGE * 0.65 / (4 * RAGE_CONVERSION_VALUE) + 3.5 * WEAPON_MAINHAND.weapon_speed / 1000 / 2, 0, 15 * MH_DAMAGE / RAGE_CONVERSION_VALUE) + ATTACK_TABLE_WHITE_MH.crit * _lodash.default.clamp(15 * MH_CRIT_DAMAGE / (4 * RAGE_CONVERSION_VALUE) + 7 * WEAPON_MAINHAND.weapon_speed / 1000 / 2, 0, 15 * MH_DAMAGE / RAGE_CONVERSION_VALUE) || 0;
   var RAGE_PER_SECOND_MH = WEAPON_MAINHAND && RAGE_MH / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE) || 0;
   var RAGE_PER_SECOND_WINDFURY = MH_EXTRA_ATTACKS_WINDFURY_TOTEM * RAGE_MH / ROTATION_DURATION_SECONDS;
-  var RAGE_OH = WEAPON_OFFHAND && ATTACK_TABLE_WHITE.hit * _lodash.default.clamp(15 * OH_DAMAGE / (4 * RAGE_CONVERSION_VALUE) + 1.75 * WEAPON_OFFHAND.weapon_speed / 1000 / 2, 0, 15 * OH_DAMAGE / RAGE_CONVERSION_VALUE) + ATTACK_TABLE_WHITE.glance * _lodash.default.clamp(15 * OH_DAMAGE * 0.65 / (4 * RAGE_CONVERSION_VALUE) + 1.75 * WEAPON_OFFHAND.weapon_speed / 1000 / 2, 0, 15 * OH_DAMAGE / RAGE_CONVERSION_VALUE) + ATTACK_TABLE_WHITE.crit * _lodash.default.clamp(15 * OH_CRIT_DAMAGE / (4 * RAGE_CONVERSION_VALUE) + 3.5 * WEAPON_OFFHAND.weapon_speed / 1000 / 2, 0, 15 * OH_DAMAGE / RAGE_CONVERSION_VALUE) || 0;
+  var RAGE_OH = WEAPON_OFFHAND && ATTACK_TABLE_WHITE_OH.hit * _lodash.default.clamp(15 * OH_DAMAGE / (4 * RAGE_CONVERSION_VALUE) + 1.75 * WEAPON_OFFHAND.weapon_speed / 1000 / 2, 0, 15 * OH_DAMAGE / RAGE_CONVERSION_VALUE) + ATTACK_TABLE_WHITE_OH.glance * _lodash.default.clamp(15 * OH_DAMAGE * 0.65 / (4 * RAGE_CONVERSION_VALUE) + 1.75 * WEAPON_OFFHAND.weapon_speed / 1000 / 2, 0, 15 * OH_DAMAGE / RAGE_CONVERSION_VALUE) + ATTACK_TABLE_WHITE_OH.crit * _lodash.default.clamp(15 * OH_CRIT_DAMAGE / (4 * RAGE_CONVERSION_VALUE) + 3.5 * WEAPON_OFFHAND.weapon_speed / 1000 / 2, 0, 15 * OH_DAMAGE / RAGE_CONVERSION_VALUE) || 0;
   var RAGE_PER_SECOND_OH = WEAPON_OFFHAND && RAGE_OH / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE) || 0;
   var NUM_DODGES_PER_ROTATION = NUM_MH_SWINGS_PER_ROTATION + NUM_OH_SWINGS_PER_ROTATION + 3 + 2;
   var RAGE_PER_SECOND_T4_4PC = SET_BONUS_TIER4_4PIECE ? NUM_DODGES_PER_ROTATION * 2 / ROTATION_DURATION_SECONDS : 0;
@@ -112,26 +127,26 @@ var _default = function _default(_ref) {
 
   var MH_WHITE_CONTRIBUTION = 1 - NUM_HEROIC_STRIKES_PER_ROTATION / NUM_MH_SWINGS_PER_ROTATION;
   var MH_WHITE_DPS_ADJUSTED_FOR_HS = MH_WHITE_DPS * MH_WHITE_CONTRIBUTION;
-  var MH_WHITE_DPS_EXTRA_ATTACKS_WINDFURY_TOTEM = MH_EXTRA_ATTACKS_WINDFURY_TOTEM * (ATTACK_TABLE_WHITE.hit * MH_DAMAGE + ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2) / ROTATION_DURATION_SECONDS;
+  var MH_WHITE_DPS_EXTRA_ATTACKS_WINDFURY_TOTEM = MH_EXTRA_ATTACKS_WINDFURY_TOTEM * (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE + ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2) / ROTATION_DURATION_SECONDS;
   var WHITE_DPS = MH_WHITE_DPS_ADJUSTED_FOR_HS + MH_WHITE_DPS_EXTRA_ATTACKS_WINDFURY_TOTEM + OH_WHITE_DPS;
-  var YELLOW_HIT_CHANCE = 1 - ATTACK_TABLE_YELLOW.miss - ATTACK_TABLE_YELLOW.dodge - ATTACK_TABLE_YELLOW.parry;
+  var YELLOW_HIT_CHANCE = 1 - ATTACK_TABLE_YELLOW_MH.miss - ATTACK_TABLE_YELLOW_MH.dodge - ATTACK_TABLE_YELLOW_MH.parry;
   var HEROIC_STRIKE_DAMAGE = 208 + (MH_WEAPON_DAMAGE + AP_COEFFICIENT * stats.attackpower / 14) * ARMOR_MULTIPLIER * target.multipliers.physical; // Yellow hits that dont miss and dont crit
 
-  var HEROIC_STRIKE_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * HEROIC_STRIKE_DAMAGE; // Yellow hits that dont miss and do crit
+  var HEROIC_STRIKE_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_MH.crit) * HEROIC_STRIKE_DAMAGE; // Yellow hits that dont miss and do crit
 
-  var HEROIC_STRIKE_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW.crit * HEROIC_STRIKE_DAMAGE * 2 * // Melee crit
+  var HEROIC_STRIKE_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_MH.crit * HEROIC_STRIKE_DAMAGE * 2 * // Melee crit
   1.2; // Talent: Impale
 
   var HEROIC_STRIKE_DPS = NUM_HEROIC_STRIKES_PER_ROTATION * (HEROIC_STRIKE_COMPONENT + HEROIC_STRIKE_CRIT_COMPONENT) / ROTATION_DURATION_SECONDS;
   var BLOODTHIRST_DAMAGE = 0.45 * stats.attackpower * ARMOR_MULTIPLIER * target.multipliers.physical;
-  var BLOODTHIRST_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * BLOODTHIRST_DAMAGE;
-  var BLOODTHIRST_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW.crit * HEROIC_STRIKE_DAMAGE * 2 * // Melee crit
+  var BLOODTHIRST_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_MH.crit) * BLOODTHIRST_DAMAGE;
+  var BLOODTHIRST_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_MH.crit * HEROIC_STRIKE_DAMAGE * 2 * // Melee crit
   1.2; // Talent: Impale
 
   var BLOODTHIRST_DPS = 3 * (BLOODTHIRST_COMPONENT + BLOODTHIRST_CRIT_COMPONENT) / ROTATION_DURATION_SECONDS;
   var WHIRLWIND_DAMAGE = MH_DAMAGE + OH_DAMAGE;
-  var WHIRLWIND_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * WHIRLWIND_DAMAGE;
-  var WHIRLWIND_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW.crit * WHIRLWIND_DAMAGE * 2 * // Melee crit
+  var WHIRLWIND_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_MH.crit) * WHIRLWIND_DAMAGE;
+  var WHIRLWIND_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_MH.crit * WHIRLWIND_DAMAGE * 2 * // Melee crit
   1.2; // Talent: Impale
 
   var WHIRLWIND_DPS = NUM_WW_PER_ROTATION * (WHIRLWIND_COMPONENT + WHIRLWIND_CRIT_COMPONENT) / ROTATION_DURATION_SECONDS;

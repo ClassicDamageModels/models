@@ -17,6 +17,14 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var _default = function _default(_ref) {
   var spec = _ref.spec,
       stats = _ref.vitals,
@@ -60,8 +68,16 @@ var _default = function _default(_ref) {
   });
 
   var SWORD_SPECIALIZATION_ACTIVE = SWORD_SPECIALIZATION && WEAPON_MAINHAND.subclass === 'sword_1h';
-  var ATTACK_TABLE_WHITE = (0, _combat.getAttackTable)('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]);
-  var ATTACK_TABLE_YELLOW = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]);
+
+  var _getAttackTable = (0, _combat.getAttackTable)('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]),
+      _getAttackTable2 = _slicedToArray(_getAttackTable, 2),
+      ATTACK_TABLE_WHITE_MH = _getAttackTable2[0],
+      ATTACK_TABLE_WHITE_OH = _getAttackTable2[1];
+
+  var _getAttackTable3 = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]),
+      _getAttackTable4 = _slicedToArray(_getAttackTable3, 1),
+      ATTACK_TABLE_YELLOW_MH = _getAttackTable4[0];
+
   var AP_COEFFICIENT = (0, _combat.getAPCoefficient)(WEAPON_MAINHAND);
   var BONUS_HASTE = // Slice and Dice
   1.3 * // Blade Flurry (15/120s uptime * 20% = 2.5% average)
@@ -93,7 +109,7 @@ var _default = function _default(_ref) {
   var OH_EXTRA_ATTACKS_SWORD_SPECIALIZATION = SWORD_SPECIALIZATION_ACTIVE ? 0.05 * (ROTATION_DURATION_SECONDS / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE)) : 0;
   var MAX_ENERGY = 100 / FIGHT_DURATION_SECONDS;
   var ENERGY_REGEN = 10;
-  var ENERGY_FROM_POTENCY = WEAPON_OFFHAND && (ATTACK_TABLE_WHITE.hit + ATTACK_TABLE_WHITE.glance + ATTACK_TABLE_WHITE.crit) * 0.2 * 15 / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE) || 0;
+  var ENERGY_FROM_POTENCY = WEAPON_OFFHAND && (ATTACK_TABLE_WHITE_OH.hit + ATTACK_TABLE_WHITE_OH.glance + ATTACK_TABLE_WHITE_OH.crit) * 0.2 * 15 / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE) || 0;
   var ENERGY_FROM_AR = 150 / FIGHT_DURATION_SECONDS;
   var ENERGY_BUDGET = MAX_ENERGY + ENERGY_REGEN + ENERGY_FROM_POTENCY + ENERGY_FROM_AR;
   var ROTATION_ENERGY_CONSUMPTION = ((SND_CP - RUTHLESSNESS_CHANCE - T4_4PC_CHANCE) * SINISTER_COST + SND_COST - SND_CP * DISCOUNT_PER_CP + (RUPTURE_CP - RUTHLESSNESS_CHANCE - T4_4PC_CHANCE) * SINISTER_COST + RUPTURE_COST - RUPTURE_CP * DISCOUNT_PER_CP) / SND_DURATIONS[SND_CP];
@@ -104,11 +120,11 @@ var _default = function _default(_ref) {
   1.1 * ARMOR_MULTIPLIER * target.multipliers.physical || 0; // Rupture at 5 combo points deals 8 ticks at 125 + 0.03 * AP
 
   var RUPTURE_DAMAGE = (125 + 0.03 * stats.attackpower) * 8 * ARMOR_MULTIPLIER * target.multipliers.physical;
-  var YELLOW_HIT_CHANCE = 1 - ATTACK_TABLE_YELLOW.miss - ATTACK_TABLE_YELLOW.dodge - ATTACK_TABLE_YELLOW.parry; // Yellow hits that dont miss and dont crit
+  var YELLOW_HIT_CHANCE = 1 - ATTACK_TABLE_YELLOW_MH.miss - ATTACK_TABLE_YELLOW_MH.dodge - ATTACK_TABLE_YELLOW_MH.parry; // Yellow hits that dont miss and dont crit
 
-  var SINISTER_HIT_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * SINISTER_DAMAGE; // Yellow hits that dont miss and do crit
+  var SINISTER_HIT_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_MH.crit) * SINISTER_DAMAGE; // Yellow hits that dont miss and do crit
 
-  var SINISTER_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW.crit * SINISTER_DAMAGE * // Melee crit
+  var SINISTER_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_MH.crit * SINISTER_DAMAGE * // Melee crit
   2 * // Talent: Lethality
   1.3; // Each strike has a 30% chance of poisoning the enemy for 180 Nature damage over 12 sec. Stacks up to 5 times on a single target.
   // FIXME: Assumed 100% uptime
@@ -126,11 +142,11 @@ var _default = function _default(_ref) {
   0.28 * (INSTANT_POISON_HIT_COMPONENT + INSTANT_POISON_CRIT_COMPONENT) / ROTATION_DURATION_SECONDS;
   var MH_DAMAGE = WEAPON_MAINHAND && (MH_WEAPON_DAMAGE + stats.attackpower / 14 * (WEAPON_MAINHAND.weapon_speed / 1000)) * ARMOR_MULTIPLIER * target.multipliers.physical || 0;
   var OH_DAMAGE = WEAPON_OFFHAND && (OH_WEAPON_DAMAGE + stats.attackpower / 14 * (WEAPON_OFFHAND.weapon_speed / 1000)) * ARMOR_MULTIPLIER * target.multipliers.physical || 0;
-  var MH_WHITE_COMPONENT_EXTRA_ATTACKS_SWORD_SPECIALIZATION = MH_EXTRA_ATTACKS_SWORD_SPECIALIZATION * (ATTACK_TABLE_WHITE.hit * MH_DAMAGE + ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2) / ROTATION_DURATION_SECONDS;
-  var MH_WHITE_COMPONENT_EXTRA_ATTACKS_WINDFURY_TOTEM = MH_EXTRA_ATTACKS_WINDFURY_TOTEM * (ATTACK_TABLE_WHITE.hit * MH_DAMAGE + ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2) / ROTATION_DURATION_SECONDS;
-  var OH_WHITE_COMPONENT_EXTRA_ATTACKS_SWORD_SPECIALIZATION = OH_EXTRA_ATTACKS_SWORD_SPECIALIZATION * (ATTACK_TABLE_WHITE.hit * MH_DAMAGE + ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2) / ROTATION_DURATION_SECONDS * 0.75;
-  var MH_WHITE_COMPONENT = (ATTACK_TABLE_WHITE.hit * MH_DAMAGE + ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2) / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE);
-  var OH_WHITE_COMPONENT = (ATTACK_TABLE_WHITE.hit * OH_DAMAGE + ATTACK_TABLE_WHITE.glance * OH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * OH_DAMAGE * 2) * 0.75 / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE);
+  var MH_WHITE_COMPONENT_EXTRA_ATTACKS_SWORD_SPECIALIZATION = MH_EXTRA_ATTACKS_SWORD_SPECIALIZATION * (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE + ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2) / ROTATION_DURATION_SECONDS;
+  var MH_WHITE_COMPONENT_EXTRA_ATTACKS_WINDFURY_TOTEM = MH_EXTRA_ATTACKS_WINDFURY_TOTEM * (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE + ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2) / ROTATION_DURATION_SECONDS;
+  var OH_WHITE_COMPONENT_EXTRA_ATTACKS_SWORD_SPECIALIZATION = OH_EXTRA_ATTACKS_SWORD_SPECIALIZATION * (ATTACK_TABLE_WHITE_OH.hit * MH_DAMAGE + ATTACK_TABLE_WHITE_OH.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_OH.crit * MH_DAMAGE * 2) / ROTATION_DURATION_SECONDS * 0.75;
+  var MH_WHITE_COMPONENT = (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE + ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2) / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE);
+  var OH_WHITE_COMPONENT = (ATTACK_TABLE_WHITE_OH.hit * OH_DAMAGE + ATTACK_TABLE_WHITE_OH.glance * OH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_OH.crit * OH_DAMAGE * 2) * 0.75 / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE);
   var WHITE_COMPONENT = MH_WHITE_COMPONENT + MH_WHITE_COMPONENT_EXTRA_ATTACKS_SWORD_SPECIALIZATION + MH_WHITE_COMPONENT_EXTRA_ATTACKS_WINDFURY_TOTEM + OH_WHITE_COMPONENT + OH_WHITE_COMPONENT_EXTRA_ATTACKS_SWORD_SPECIALIZATION;
   var segments = [{
     source: {

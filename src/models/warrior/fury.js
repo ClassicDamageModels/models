@@ -25,10 +25,10 @@ export default ({
   const FIGHT_DURATION_SECONDS = 5 * 60
   const WINDFURY_TOTEM = buffs.raid // FIXME: Pass all buffs explicitly
 
-  const ATTACK_TABLE_WHITE = getAttackTable('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
-  const ATTACK_TABLE_YELLOW = getAttackTable('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
+  const [ ATTACK_TABLE_WHITE_MH, ATTACK_TABLE_WHITE_OH ] = getAttackTable('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
+  const [ ATTACK_TABLE_YELLOW_MH ] = getAttackTable('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
 
-  const FLURRY_UPTIME = 1 - Math.pow(1 - ATTACK_TABLE_WHITE.crit, 4)
+  const FLURRY_UPTIME = 1 - Math.pow(1 - ATTACK_TABLE_WHITE_MH.crit, 4)
 
   // T4 2-piece: Your Whirlwind ability costs 5 less rage.
   const SET_BONUS_TIER4_2PIECE = _.find(spells, { id: 37518 })
@@ -82,9 +82,9 @@ export default ({
   const OH_CRIT_DAMAGE = OH_DAMAGE * 2
 
   const MH_WHITE_COMPONENT =
-    ATTACK_TABLE_WHITE.hit * MH_DAMAGE +
-    ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 +
-    ATTACK_TABLE_WHITE.crit * MH_CRIT_DAMAGE
+    ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE +
+    ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 +
+    ATTACK_TABLE_WHITE_MH.crit * MH_CRIT_DAMAGE
 
   const MH_WHITE_DPS =
     (WEAPON_MAINHAND && MH_WHITE_COMPONENT / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE)) ||
@@ -93,9 +93,9 @@ export default ({
   const MH_EXTRA_ATTACKS_WINDFURY_TOTEM = WINDFURY_TOTEM ? 0.2 * NUM_MH_SWINGS_PER_ROTATION : 0
 
   const OH_WHITE_COMPONENT =
-    (ATTACK_TABLE_WHITE.hit * OH_DAMAGE +
-      ATTACK_TABLE_WHITE.glance * OH_DAMAGE * 0.65 +
-      ATTACK_TABLE_WHITE.crit * OH_CRIT_DAMAGE) *
+    (ATTACK_TABLE_WHITE_OH.hit * OH_DAMAGE +
+      ATTACK_TABLE_WHITE_OH.glance * OH_DAMAGE * 0.65 +
+      ATTACK_TABLE_WHITE_OH.crit * OH_CRIT_DAMAGE) *
     0.625
 
   const OH_WHITE_DPS =
@@ -123,21 +123,21 @@ export default ({
 
   const RAGE_MH =
     (WEAPON_MAINHAND &&
-      ATTACK_TABLE_WHITE.hit *
+      ATTACK_TABLE_WHITE_MH.hit *
         _.clamp(
           (15 * MH_DAMAGE) / (4 * RAGE_CONVERSION_VALUE) +
             (3.5 * WEAPON_MAINHAND.weapon_speed) / 1000 / 2,
           0,
           (15 * MH_DAMAGE) / RAGE_CONVERSION_VALUE
         ) +
-        ATTACK_TABLE_WHITE.glance *
+        ATTACK_TABLE_WHITE_MH.glance *
           _.clamp(
             (15 * MH_DAMAGE * 0.65) / (4 * RAGE_CONVERSION_VALUE) +
               (3.5 * WEAPON_MAINHAND.weapon_speed) / 1000 / 2,
             0,
             (15 * MH_DAMAGE) / RAGE_CONVERSION_VALUE
           ) +
-        ATTACK_TABLE_WHITE.crit *
+        ATTACK_TABLE_WHITE_MH.crit *
           _.clamp(
             (15 * MH_CRIT_DAMAGE) / (4 * RAGE_CONVERSION_VALUE) +
               (7 * WEAPON_MAINHAND.weapon_speed) / 1000 / 2,
@@ -154,21 +154,21 @@ export default ({
 
   const RAGE_OH =
     (WEAPON_OFFHAND &&
-      ATTACK_TABLE_WHITE.hit *
+      ATTACK_TABLE_WHITE_OH.hit *
         _.clamp(
           (15 * OH_DAMAGE) / (4 * RAGE_CONVERSION_VALUE) +
             (1.75 * WEAPON_OFFHAND.weapon_speed) / 1000 / 2,
           0,
           (15 * OH_DAMAGE) / RAGE_CONVERSION_VALUE
         ) +
-        ATTACK_TABLE_WHITE.glance *
+        ATTACK_TABLE_WHITE_OH.glance *
           _.clamp(
             (15 * OH_DAMAGE * 0.65) / (4 * RAGE_CONVERSION_VALUE) +
               (1.75 * WEAPON_OFFHAND.weapon_speed) / 1000 / 2,
             0,
             (15 * OH_DAMAGE) / RAGE_CONVERSION_VALUE
           ) +
-        ATTACK_TABLE_WHITE.crit *
+        ATTACK_TABLE_WHITE_OH.crit *
           _.clamp(
             (15 * OH_CRIT_DAMAGE) / (4 * RAGE_CONVERSION_VALUE) +
               (3.5 * WEAPON_OFFHAND.weapon_speed) / 1000 / 2,
@@ -225,16 +225,16 @@ export default ({
 
   const MH_WHITE_DPS_EXTRA_ATTACKS_WINDFURY_TOTEM =
     (MH_EXTRA_ATTACKS_WINDFURY_TOTEM *
-      (ATTACK_TABLE_WHITE.hit * MH_DAMAGE +
-        ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 +
-        ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2)) /
+      (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE +
+        ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 +
+        ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2)) /
     ROTATION_DURATION_SECONDS
 
   const WHITE_DPS =
     MH_WHITE_DPS_ADJUSTED_FOR_HS + MH_WHITE_DPS_EXTRA_ATTACKS_WINDFURY_TOTEM + OH_WHITE_DPS
 
   const YELLOW_HIT_CHANCE =
-    1 - ATTACK_TABLE_YELLOW.miss - ATTACK_TABLE_YELLOW.dodge - ATTACK_TABLE_YELLOW.parry
+    1 - ATTACK_TABLE_YELLOW_MH.miss - ATTACK_TABLE_YELLOW_MH.dodge - ATTACK_TABLE_YELLOW_MH.parry
 
   const HEROIC_STRIKE_DAMAGE =
     208 +
@@ -244,12 +244,12 @@ export default ({
 
   // Yellow hits that dont miss and dont crit
   const HEROIC_STRIKE_COMPONENT =
-    YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * HEROIC_STRIKE_DAMAGE
+    YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_MH.crit) * HEROIC_STRIKE_DAMAGE
 
   // Yellow hits that dont miss and do crit
   const HEROIC_STRIKE_CRIT_COMPONENT =
     YELLOW_HIT_CHANCE *
-    ATTACK_TABLE_YELLOW.crit *
+    ATTACK_TABLE_YELLOW_MH.crit *
     HEROIC_STRIKE_DAMAGE *
     2 * // Melee crit
     1.2 // Talent: Impale
@@ -262,11 +262,11 @@ export default ({
     0.45 * stats.attackpower * ARMOR_MULTIPLIER * target.multipliers.physical
 
   const BLOODTHIRST_COMPONENT =
-    YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * BLOODTHIRST_DAMAGE
+    YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_MH.crit) * BLOODTHIRST_DAMAGE
 
   const BLOODTHIRST_CRIT_COMPONENT =
     YELLOW_HIT_CHANCE *
-    ATTACK_TABLE_YELLOW.crit *
+    ATTACK_TABLE_YELLOW_MH.crit *
     HEROIC_STRIKE_DAMAGE *
     2 * // Melee crit
     1.2 // Talent: Impale
@@ -276,10 +276,10 @@ export default ({
 
   const WHIRLWIND_DAMAGE = MH_DAMAGE + OH_DAMAGE
 
-  const WHIRLWIND_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * WHIRLWIND_DAMAGE
+  const WHIRLWIND_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_MH.crit) * WHIRLWIND_DAMAGE
   const WHIRLWIND_CRIT_COMPONENT =
     YELLOW_HIT_CHANCE *
-    ATTACK_TABLE_YELLOW.crit *
+    ATTACK_TABLE_YELLOW_MH.crit *
     WHIRLWIND_DAMAGE *
     2 * // Melee crit
     1.2 // Talent: Impale

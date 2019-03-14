@@ -21,8 +21,8 @@ export default ({
   const MH_IS_2H = MH && MH.type === '2H weapon'
 
   const WINDFURY_TOTEM = buffs.raid // FIXME: Pass all buffs explicitly
-  const ATTACK_TABLE_WHITE = getAttackTable('white', stats, [WEAPON_MAINHAND])
-  const ATTACK_TABLE_YELLOW = getAttackTable('yellow', stats, [WEAPON_MAINHAND])
+  const [ATTACK_TABLE_WHITE] = getAttackTable('white', stats, [WEAPON_MAINHAND])
+  const [ATTACK_TABLE_YELLOW] = getAttackTable('yellow', stats, [WEAPON_MAINHAND])
   const AP_COEFFICIENT = (WEAPON_MAINHAND && getAPCoefficient(WEAPON_MAINHAND)) || 0
   const ARMOR_MULTIPLIER = getArmorMultiplier(_.clamp(target.stats.armor - stats.armorpen, 0, 7700))
   const TOTAL_HASTE = 1 + stats.haste / 100

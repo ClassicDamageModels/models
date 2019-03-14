@@ -29,8 +29,11 @@ export default ({
   // T4 4-piece: Your finishing moves have a 15% chance to grant you a combo point.
   const SET_BONUS_TIER4_4PIECE = _.find(spells, { id: 37168 })
 
-  const ATTACK_TABLE_WHITE = getAttackTable('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
-  const ATTACK_TABLE_YELLOW = getAttackTable('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
+  const [ATTACK_TABLE_WHITE_MH, ATTACK_TABLE_WHITE_OH] = getAttackTable('white', stats, [
+    WEAPON_MAINHAND,
+    WEAPON_OFFHAND
+  ])
+  const [ATTACK_TABLE_YELLOW] = getAttackTable('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
 
   const AP_COEFFICIENT = getAPCoefficient(WEAPON_MAINHAND)
 
@@ -175,7 +178,10 @@ export default ({
     SPELL_HIT_CHANCE * SPELL_CRIT_CHANCE * INSTANT_POISON_DAMAGE * 1.5
   const INSTANT_POISON_DAMAGE_COMPONENT = WINDFURY_TOTEM
     ? 0
-    : (MH_ATTACKS_PER_ROTATION * 0.2 * SPELL_HIT_CHANCE * INSTANT_POISON_DAMAGE) /
+    : (MH_ATTACKS_PER_ROTATION *
+        0.2 *
+        SPELL_HIT_CHANCE *
+        (INSTANT_POISON_HIT_COMPONENT + INSTANT_POISON_CRIT_COMPONENT)) /
       ROTATION_DURATION_SECONDS
 
   const MH_DAMAGE =
@@ -194,21 +200,21 @@ export default ({
 
   const MH_WHITE_COMPONENT_EXTRA_ATTACKS_WINDFURY_TOTEM =
     (MH_EXTRA_ATTACKS_WINDFURY_TOTEM *
-      (ATTACK_TABLE_WHITE.hit * MH_DAMAGE +
-        ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 +
-        ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2)) /
+      (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE +
+        ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 +
+        ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2)) /
     ROTATION_DURATION_SECONDS
 
   const MH_WHITE_COMPONENT =
-    (ATTACK_TABLE_WHITE.hit * MH_DAMAGE +
-      ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 +
-      ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2) /
+    (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE +
+      ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 +
+      ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2) /
     (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE)
 
   const OH_WHITE_COMPONENT =
-    ((ATTACK_TABLE_WHITE.hit * OH_DAMAGE +
-      ATTACK_TABLE_WHITE.glance * OH_DAMAGE * 0.65 +
-      ATTACK_TABLE_WHITE.crit * OH_DAMAGE * 2) *
+    ((ATTACK_TABLE_WHITE_OH.hit * OH_DAMAGE +
+      ATTACK_TABLE_WHITE_OH.glance * OH_DAMAGE * 0.65 +
+      ATTACK_TABLE_WHITE_OH.crit * OH_DAMAGE * 2) *
       0.75) /
     (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE)
 

@@ -39,8 +39,14 @@ export default ({
   const SWORD_SPECIALIZATION_ACTIVE =
     SWORD_SPECIALIZATION && WEAPON_MAINHAND.subclass === 'sword_1h'
 
-  const ATTACK_TABLE_WHITE = getAttackTable('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
-  const ATTACK_TABLE_YELLOW = getAttackTable('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND])
+  const [ATTACK_TABLE_WHITE_MH, ATTACK_TABLE_WHITE_OH] = getAttackTable('white', stats, [
+    WEAPON_MAINHAND,
+    WEAPON_OFFHAND
+  ])
+  const [ATTACK_TABLE_YELLOW_MH] = getAttackTable('yellow', stats, [
+    WEAPON_MAINHAND,
+    WEAPON_OFFHAND
+  ])
 
   const AP_COEFFICIENT = getAPCoefficient(WEAPON_MAINHAND)
 
@@ -94,7 +100,9 @@ export default ({
   const ENERGY_REGEN = 10
   const ENERGY_FROM_POTENCY =
     (WEAPON_OFFHAND &&
-      ((ATTACK_TABLE_WHITE.hit + ATTACK_TABLE_WHITE.glance + ATTACK_TABLE_WHITE.crit) * 0.2 * 15) /
+      ((ATTACK_TABLE_WHITE_OH.hit + ATTACK_TABLE_WHITE_OH.glance + ATTACK_TABLE_WHITE_OH.crit) *
+        0.2 *
+        15) /
         (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE)) ||
     0
 
@@ -131,16 +139,16 @@ export default ({
     (125 + 0.03 * stats.attackpower) * 8 * ARMOR_MULTIPLIER * target.multipliers.physical
 
   const YELLOW_HIT_CHANCE =
-    1 - ATTACK_TABLE_YELLOW.miss - ATTACK_TABLE_YELLOW.dodge - ATTACK_TABLE_YELLOW.parry
+    1 - ATTACK_TABLE_YELLOW_MH.miss - ATTACK_TABLE_YELLOW_MH.dodge - ATTACK_TABLE_YELLOW_MH.parry
 
   // Yellow hits that dont miss and dont crit
   const SINISTER_HIT_COMPONENT =
-    YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW.crit) * SINISTER_DAMAGE
+    YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_MH.crit) * SINISTER_DAMAGE
 
   // Yellow hits that dont miss and do crit
   const SINISTER_CRIT_COMPONENT =
     YELLOW_HIT_CHANCE *
-    ATTACK_TABLE_YELLOW.crit *
+    ATTACK_TABLE_YELLOW_MH.crit *
     SINISTER_DAMAGE *
     // Melee crit
     2 *
@@ -183,36 +191,36 @@ export default ({
 
   const MH_WHITE_COMPONENT_EXTRA_ATTACKS_SWORD_SPECIALIZATION =
     (MH_EXTRA_ATTACKS_SWORD_SPECIALIZATION *
-      (ATTACK_TABLE_WHITE.hit * MH_DAMAGE +
-        ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 +
-        ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2)) /
+      (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE +
+        ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 +
+        ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2)) /
     ROTATION_DURATION_SECONDS
 
   const MH_WHITE_COMPONENT_EXTRA_ATTACKS_WINDFURY_TOTEM =
     (MH_EXTRA_ATTACKS_WINDFURY_TOTEM *
-      (ATTACK_TABLE_WHITE.hit * MH_DAMAGE +
-        ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 +
-        ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2)) /
+      (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE +
+        ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 +
+        ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2)) /
     ROTATION_DURATION_SECONDS
 
   const OH_WHITE_COMPONENT_EXTRA_ATTACKS_SWORD_SPECIALIZATION =
     ((OH_EXTRA_ATTACKS_SWORD_SPECIALIZATION *
-      (ATTACK_TABLE_WHITE.hit * MH_DAMAGE +
-        ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 +
-        ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2)) /
+      (ATTACK_TABLE_WHITE_OH.hit * MH_DAMAGE +
+        ATTACK_TABLE_WHITE_OH.glance * MH_DAMAGE * 0.65 +
+        ATTACK_TABLE_WHITE_OH.crit * MH_DAMAGE * 2)) /
       ROTATION_DURATION_SECONDS) *
     0.75
 
   const MH_WHITE_COMPONENT =
-    (ATTACK_TABLE_WHITE.hit * MH_DAMAGE +
-      ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 +
-      ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2) /
+    (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE +
+      ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 +
+      ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2) /
     (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE)
 
   const OH_WHITE_COMPONENT =
-    ((ATTACK_TABLE_WHITE.hit * OH_DAMAGE +
-      ATTACK_TABLE_WHITE.glance * OH_DAMAGE * 0.65 +
-      ATTACK_TABLE_WHITE.crit * OH_DAMAGE * 2) *
+    ((ATTACK_TABLE_WHITE_OH.hit * OH_DAMAGE +
+      ATTACK_TABLE_WHITE_OH.glance * OH_DAMAGE * 0.65 +
+      ATTACK_TABLE_WHITE_OH.crit * OH_DAMAGE * 2) *
       0.75) /
     (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE)
 

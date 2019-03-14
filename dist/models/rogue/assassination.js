@@ -17,6 +17,14 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 var _default = function _default(_ref) {
   var stats = _ref.vitals,
       target = _ref.target,
@@ -47,8 +55,15 @@ var _default = function _default(_ref) {
     id: 37168
   });
 
-  var ATTACK_TABLE_WHITE = (0, _combat.getAttackTable)('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]);
-  var ATTACK_TABLE_YELLOW = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]);
+  var _getAttackTable = (0, _combat.getAttackTable)('white', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]),
+      _getAttackTable2 = _slicedToArray(_getAttackTable, 2),
+      ATTACK_TABLE_WHITE_MH = _getAttackTable2[0],
+      ATTACK_TABLE_WHITE_OH = _getAttackTable2[1];
+
+  var _getAttackTable3 = (0, _combat.getAttackTable)('yellow', stats, [WEAPON_MAINHAND, WEAPON_OFFHAND]),
+      _getAttackTable4 = _slicedToArray(_getAttackTable3, 1),
+      ATTACK_TABLE_YELLOW = _getAttackTable4[0];
+
   var AP_COEFFICIENT = (0, _combat.getAPCoefficient)(WEAPON_MAINHAND);
   var BONUS_HASTE = // Slice and Dice
   1.3 * // Blade Flurry (15/120s uptime * 20% = 2.5% average)
@@ -125,12 +140,12 @@ var _default = function _default(_ref) {
 
   var INSTANT_POISON_HIT_COMPONENT = SPELL_HIT_CHANCE * (1 - SPELL_CRIT_CHANCE) * INSTANT_POISON_DAMAGE;
   var INSTANT_POISON_CRIT_COMPONENT = SPELL_HIT_CHANCE * SPELL_CRIT_CHANCE * INSTANT_POISON_DAMAGE * 1.5;
-  var INSTANT_POISON_DAMAGE_COMPONENT = WINDFURY_TOTEM ? 0 : MH_ATTACKS_PER_ROTATION * 0.2 * SPELL_HIT_CHANCE * INSTANT_POISON_DAMAGE / ROTATION_DURATION_SECONDS;
+  var INSTANT_POISON_DAMAGE_COMPONENT = WINDFURY_TOTEM ? 0 : MH_ATTACKS_PER_ROTATION * 0.2 * SPELL_HIT_CHANCE * (INSTANT_POISON_HIT_COMPONENT + INSTANT_POISON_CRIT_COMPONENT) / ROTATION_DURATION_SECONDS;
   var MH_DAMAGE = WEAPON_MAINHAND && (MH_WEAPON_DAMAGE + stats.attackpower / 14 * (WEAPON_MAINHAND.weapon_speed / 1000)) * ARMOR_MULTIPLIER * target.multipliers.physical || 0;
   var OH_DAMAGE = WEAPON_OFFHAND && (OH_WEAPON_DAMAGE + stats.attackpower / 14 * (WEAPON_OFFHAND.weapon_speed / 1000)) * ARMOR_MULTIPLIER * target.multipliers.physical || 0;
-  var MH_WHITE_COMPONENT_EXTRA_ATTACKS_WINDFURY_TOTEM = MH_EXTRA_ATTACKS_WINDFURY_TOTEM * (ATTACK_TABLE_WHITE.hit * MH_DAMAGE + ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2) / ROTATION_DURATION_SECONDS;
-  var MH_WHITE_COMPONENT = (ATTACK_TABLE_WHITE.hit * MH_DAMAGE + ATTACK_TABLE_WHITE.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * MH_DAMAGE * 2) / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE);
-  var OH_WHITE_COMPONENT = (ATTACK_TABLE_WHITE.hit * OH_DAMAGE + ATTACK_TABLE_WHITE.glance * OH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE.crit * OH_DAMAGE * 2) * 0.75 / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE);
+  var MH_WHITE_COMPONENT_EXTRA_ATTACKS_WINDFURY_TOTEM = MH_EXTRA_ATTACKS_WINDFURY_TOTEM * (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE + ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2) / ROTATION_DURATION_SECONDS;
+  var MH_WHITE_COMPONENT = (ATTACK_TABLE_WHITE_MH.hit * MH_DAMAGE + ATTACK_TABLE_WHITE_MH.glance * MH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_MH.crit * MH_DAMAGE * 2) / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE);
+  var OH_WHITE_COMPONENT = (ATTACK_TABLE_WHITE_OH.hit * OH_DAMAGE + ATTACK_TABLE_WHITE_OH.glance * OH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_OH.crit * OH_DAMAGE * 2) * 0.75 / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE);
   var WHITE_COMPONENT = MH_WHITE_COMPONENT + MH_WHITE_COMPONENT_EXTRA_ATTACKS_WINDFURY_TOTEM + OH_WHITE_COMPONENT;
   var segments = [{
     source: {

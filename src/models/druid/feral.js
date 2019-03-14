@@ -16,8 +16,8 @@ export default ({
     icon: 'ability_druid_catformattack'
   }
 
-  const ATTACK_TABLE_WHITE = getAttackTable('white', stats, [WEAPON_MAINHAND])
-  const ATTACK_TABLE_YELLOW = getAttackTable('yellow', stats, [WEAPON_MAINHAND])
+  const [ATTACK_TABLE_WHITE] = getAttackTable('white', stats, [WEAPON_MAINHAND])
+  const [ATTACK_TABLE_YELLOW] = getAttackTable('yellow', stats, [WEAPON_MAINHAND])
 
   const TOTAL_HASTE = 1 + stats.haste / 100
 
