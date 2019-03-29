@@ -9,10 +9,15 @@ export default ({
     data: { gear }
   }
 }) => {
+  const DELAY_LAG = 0.1
+  const DELAY_HUMAN_FACTOR = 0.1
+  const GCD = 1.5
+
   const WEAPON_MAINHAND = _.find(gear, { slot: 'ranged' }).item
   const ATTACK_TABLE = getRangedAttackTable(stats)
 
   // Chicken & egg problem here, value would be calculated later
+  // FIXME: implement N-pass modeling
   const ASSUMED_HASTE = 1.4778690091230573
   const AUTO_ATTACKS_PER_SECOND = 1 / (WEAPON_MAINHAND.weapon_speed / 1000 / ASSUMED_HASTE)
 
@@ -24,6 +29,8 @@ export default ({
   const SERPENTS_SWIFTNESS_HASTE = 1.2
   const BONUS_HASTE = SERPENTS_SWIFTNESS_HASTE * IMPROVED_HAWK_HASTE * QUIVER_HASTE
   const TOTAL_HASTE = (1 + stats.haste / 100) * BONUS_HASTE
+
+  const MAX_TOTAL_HASTE = QUIVER_HASTE * SERPENTS_SWIFTNESS_HASTE * 1.15
 
   const PROJECTILE_DAMAGE = 32 * (WEAPON_MAINHAND.weapon_speed / 1000)
   const WEAPON_DAMAGE =
@@ -45,10 +52,26 @@ export default ({
     (ATTACK_TABLE.hit * MH_DAMAGE + ATTACK_TABLE.crit * MH_DAMAGE * 2.3) /
     (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE)
 
+  const CLIPPED_MH =
+    DELAY_LAG + DELAY_HUMAN_FACTOR + GCD - WEAPON_MAINHAND.weapon_speed / 1000 / MAX_TOTAL_HASTE
+
+  const MH_CLIPPED_COMPONENT =
+    (CLIPPED_MH > 0 &&
+      ((ATTACK_TABLE.hit * MH_DAMAGE + ATTACK_TABLE.crit * MH_DAMAGE * 2.3) /
+        (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE)) *
+        (CLIPPED_MH / (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE))) ||
+    0
+
+  const WEAPON_DPS =
+    (WEAPON_MAINHAND.dmg_min + WEAPON_MAINHAND.dmg_max) / 2 / (WEAPON_MAINHAND.weapon_speed / 1000)
+
+  /* Actual Equation
+  The tooltip is proven to be wrong and the following is the best player worked out formula so far with data taken from [1]
+  Formula: DamagePercentageBonus*RangedWeaponSpecialization*(150 + WeaponDamage/WeaponSpeed*2.8 + 0.2*RAP + [Dazed: 175])
+  https://wowwiki.fandom.com/wiki/Steady_Shot?oldid=680876
+  */
   const STEADY_SHOT_DAMAGE =
-    (150 +
-      (WEAPON_DAMAGE / (WEAPON_MAINHAND.weapon_speed / 1000)) * 2.8 +
-      0.2 * stats.rangedattackpower) *
+    (150 + WEAPON_DPS * 2.8 + 0.2 * stats.rangedattackpower) *
     1.02 * // Talent: Focused Fire
     ARMOR_MULTIPLIER *
     target.multipliers.physical
@@ -58,12 +81,15 @@ export default ({
 
   const STEADY_SHOT_DPS =
     (STEADY_SHOT_HIT_COMPONENT + STEADY_SHOT_CRIT_COMPONENT) /
-    (WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE)
+    Math.max(
+      WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE,
+      GCD + DELAY_LAG + DELAY_HUMAN_FACTOR
+    )
 
   return [
     {
       source: { icon: 'ability_whirlwind', name: 'Auto Shot' },
-      dps: MH_WHITE_COMPONENT
+      dps: MH_WHITE_COMPONENT - MH_CLIPPED_COMPONENT
     },
     {
       source: abilities.steadyshot,
