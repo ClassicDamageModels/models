@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "BABEL_ENV=client babel src --out-dir dist",
+    "watch:dist": "babel src --out-dir dist --watch",
     "watch": "./node_modules/.bin/nodemon --exec babel-node test/index.js"
   },
   "repository": {
