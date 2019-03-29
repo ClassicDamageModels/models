@@ -37,7 +37,11 @@ var _default = function _default(_ref) {
   var BONUS_HASTE = SERPENTS_SWIFTNESS_HASTE * IMPROVED_HAWK_HASTE * QUIVER_HASTE;
   var TOTAL_HASTE = (1 + stats.haste / 100) * BONUS_HASTE;
   var MAX_TOTAL_HASTE = (1 + stats.haste / 100) * QUIVER_HASTE * SERPENTS_SWIFTNESS_HASTE * 1.15;
-  var PROJECTILE_DAMAGE = 32 * (WEAPON_MAINHAND.weapon_speed / 1000);
+  /* Thori'dal, the Stars' Fury
+     Thori'dal generates magical arrows when the bow string is drawn. */
+
+  var THORIDAL = WEAPON_MAINHAND.id === 34334;
+  var PROJECTILE_DAMAGE = THORIDAL ? 0 : 32 * (WEAPON_MAINHAND.weapon_speed / 1000);
   var WEAPON_DAMAGE = WEAPON_MAINHAND && (WEAPON_MAINHAND.dmg_min + WEAPON_MAINHAND.dmg_max) / 2 + PROJECTILE_DAMAGE || 0;
   var ARMOR_MULTIPLIER = (0, _combat.getArmorMultiplier)(_lodash.default.clamp(target.stats.armor - stats.armorpen, 0, 7700));
   var MH_DAMAGE = WEAPON_MAINHAND && (WEAPON_DAMAGE + stats.rangedattackpower / 14 * (WEAPON_MAINHAND.weapon_speed / 1000)) * ARMOR_MULTIPLIER * 1.02 * // Talent: Focused Fire

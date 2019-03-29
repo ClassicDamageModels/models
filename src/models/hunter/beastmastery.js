@@ -32,7 +32,11 @@ export default ({
 
   const MAX_TOTAL_HASTE = (1 + stats.haste / 100) * QUIVER_HASTE * SERPENTS_SWIFTNESS_HASTE * 1.15
 
-  const PROJECTILE_DAMAGE = 32 * (WEAPON_MAINHAND.weapon_speed / 1000)
+  /* Thori'dal, the Stars' Fury
+     Thori'dal generates magical arrows when the bow string is drawn. */
+  const THORIDAL = WEAPON_MAINHAND.id === 34334
+  const PROJECTILE_DAMAGE = THORIDAL ? 0 : 32 * (WEAPON_MAINHAND.weapon_speed / 1000)
+
   const WEAPON_DAMAGE =
     (WEAPON_MAINHAND &&
       (WEAPON_MAINHAND.dmg_min + WEAPON_MAINHAND.dmg_max) / 2 + PROJECTILE_DAMAGE) ||
