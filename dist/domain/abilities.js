@@ -68,7 +68,7 @@ var _default = {
     coefficient: 1.5 / 3.5
   },
   vampirictouch: {
-    name: 'Vampiric Toich',
+    name: 'Vampiric Touch',
     icon: 'spell_holy_stoicism',
     damage: 65,
     castTime: 1.5,
