@@ -107,18 +107,41 @@ export default ({
     (WEAPON_OFFHAND && OH_WHITE_COMPONENT / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE)) || 0
 
   /* Windfury Weapon
-     Imbue the Shaman's weapon with wind. Each hit has a 20% chance of dealing
-     additional damage equal to two extra attacks with 445 extra attack power.
-     Lasts 30 minutes.
+    Imbue the Shaman's weapon with wind. Each hit has a 20% chance of dealing
+    additional damage equal to two extra attacks with 445 extra attack power.
+    Lasts 30 minutes.
 
 
-     Elemental Weapons
-     Increases the damage caused by your Rockbiter Weapon by 20%, your
-     Windfury Weapon effect by 40% and increases the damage caused by
-     your Flametongue Weapon and Frostbrand Weapon by 15%.
+    Elemental Weapons
+    Increases the damage caused by your Rockbiter Weapon by 20%, your
+    Windfury Weapon effect by 40% and increases the damage caused by
+    your Flametongue Weapon and Frostbrand Weapon by 15%.
+
+    How long on average do we wait for WF?
+
+    icd + speed / chance
+    3 + 2.0 / 0.2 = 13 seconds
+
+    How many hits do we perform in those 13 seconds? Whats our average WF chance?
+
+    1 / (MH_TIME_BETWEEN_WF * MH_HITS_PER_SECOND)
   */
-  const MH_EXTRA_ATTACKS_WINDFURY_TOTEM = 0.2 * NUM_MH_SWINGS_PER_ROTATION
-  const OH_EXTRA_ATTACKS_WINDFURY_TOTEM = 0.2 * NUM_OH_SWINGS_PER_ROTATION
+
+  const WF_CHANCE = 0.2
+  const WF_COOLDOWN = 3
+
+  const MH_HITS_PER_SECOND = NUM_MH_SWINGS_PER_ROTATION / ROTATION_DURATION_SECONDS
+  const MH_WEAPON_SPEED = WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE
+  const MH_TIME_BETWEEN_WF = WF_COOLDOWN + MH_WEAPON_SPEED / WF_CHANCE
+  const MH_WF_CHANCE = 1 / (MH_TIME_BETWEEN_WF * MH_HITS_PER_SECOND)
+
+  const OH_HITS_PER_SECOND = NUM_OH_SWINGS_PER_ROTATION / ROTATION_DURATION_SECONDS
+  const OH_WEAPON_SPEED = WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE
+  const OH_TIME_BETWEEN_WF = WF_COOLDOWN + OH_WEAPON_SPEED / WF_CHANCE
+  const OH_WF_CHANCE = 1 / (OH_TIME_BETWEEN_WF * OH_HITS_PER_SECOND)
+
+  const MH_EXTRA_ATTACKS_WINDFURY = MH_WF_CHANCE * NUM_MH_SWINGS_PER_ROTATION
+  const OH_EXTRA_ATTACKS_WINDFURY = OH_WF_CHANCE * NUM_OH_SWINGS_PER_ROTATION
 
   const MH_WINDFURY_DAMAGE =
     (MH_WEAPON_DAMAGE + (AP_COEFFICIENT * (stats.attackpower + 445 * 1.4)) / 14) *
@@ -146,15 +169,11 @@ export default ({
     YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_OH.crit * OH_WINDFURY_DAMAGE * 2
 
   const MH_WINDFURY_DPS =
-    (MH_EXTRA_ATTACKS_WINDFURY_TOTEM *
-      (MH_WINDFURY_HIT_COMPONENT + MH_WINDFURY_CRIT_COMPONENT) *
-      2) /
+    (MH_EXTRA_ATTACKS_WINDFURY * (MH_WINDFURY_HIT_COMPONENT + MH_WINDFURY_CRIT_COMPONENT) * 2) /
     ROTATION_DURATION_SECONDS
 
   const OH_WINDFURY_DPS =
-    (OH_EXTRA_ATTACKS_WINDFURY_TOTEM *
-      (OH_WINDFURY_HIT_COMPONENT + OH_WINDFURY_CRIT_COMPONENT) *
-      2) /
+    (OH_EXTRA_ATTACKS_WINDFURY * (OH_WINDFURY_HIT_COMPONENT + OH_WINDFURY_CRIT_COMPONENT) * 2) /
     ROTATION_DURATION_SECONDS
 
   const WHITE_DPS = MH_WHITE_DPS + OH_WHITE_DPS + MH_WINDFURY_DPS + OH_WINDFURY_DPS

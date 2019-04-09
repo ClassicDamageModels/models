@@ -91,17 +91,32 @@ var _default = function _default(_ref) {
   var OH_WHITE_COMPONENT = ATTACK_TABLE_WHITE_OH.hit * OH_DAMAGE + ATTACK_TABLE_WHITE_OH.glance * OH_DAMAGE * 0.65 + ATTACK_TABLE_WHITE_OH.crit * OH_CRIT_DAMAGE;
   var OH_WHITE_DPS = WEAPON_OFFHAND && OH_WHITE_COMPONENT / (WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE) || 0;
   /* Windfury Weapon
-     Imbue the Shaman's weapon with wind. Each hit has a 20% chance of dealing
-     additional damage equal to two extra attacks with 445 extra attack power.
-     Lasts 30 minutes.
-       Elemental Weapons
-     Increases the damage caused by your Rockbiter Weapon by 20%, your
-     Windfury Weapon effect by 40% and increases the damage caused by
-     your Flametongue Weapon and Frostbrand Weapon by 15%.
+    Imbue the Shaman's weapon with wind. Each hit has a 20% chance of dealing
+    additional damage equal to two extra attacks with 445 extra attack power.
+    Lasts 30 minutes.
+      Elemental Weapons
+    Increases the damage caused by your Rockbiter Weapon by 20%, your
+    Windfury Weapon effect by 40% and increases the damage caused by
+    your Flametongue Weapon and Frostbrand Weapon by 15%.
+     How long on average do we wait for WF?
+     icd + speed / chance
+    3 + 2.0 / 0.2 = 13 seconds
+     How many hits do we perform in those 13 seconds? Whats our average WF chance?
+     1 / (MH_TIME_BETWEEN_WF * MH_HITS_PER_SECOND)
   */
 
-  var MH_EXTRA_ATTACKS_WINDFURY_TOTEM = 0.2 * NUM_MH_SWINGS_PER_ROTATION;
-  var OH_EXTRA_ATTACKS_WINDFURY_TOTEM = 0.2 * NUM_OH_SWINGS_PER_ROTATION;
+  var WF_CHANCE = 0.2;
+  var WF_COOLDOWN = 3;
+  var MH_HITS_PER_SECOND = NUM_MH_SWINGS_PER_ROTATION / ROTATION_DURATION_SECONDS;
+  var MH_WEAPON_SPEED = WEAPON_MAINHAND.weapon_speed / 1000 / TOTAL_HASTE;
+  var MH_TIME_BETWEEN_WF = WF_COOLDOWN + MH_WEAPON_SPEED / WF_CHANCE;
+  var MH_WF_CHANCE = 1 / (MH_TIME_BETWEEN_WF * MH_HITS_PER_SECOND);
+  var OH_HITS_PER_SECOND = NUM_OH_SWINGS_PER_ROTATION / ROTATION_DURATION_SECONDS;
+  var OH_WEAPON_SPEED = WEAPON_OFFHAND.weapon_speed / 1000 / TOTAL_HASTE;
+  var OH_TIME_BETWEEN_WF = WF_COOLDOWN + OH_WEAPON_SPEED / WF_CHANCE;
+  var OH_WF_CHANCE = 1 / (OH_TIME_BETWEEN_WF * OH_HITS_PER_SECOND);
+  var MH_EXTRA_ATTACKS_WINDFURY = MH_WF_CHANCE * NUM_MH_SWINGS_PER_ROTATION;
+  var OH_EXTRA_ATTACKS_WINDFURY = OH_WF_CHANCE * NUM_OH_SWINGS_PER_ROTATION;
   var MH_WINDFURY_DAMAGE = (MH_WEAPON_DAMAGE + AP_COEFFICIENT * (stats.attackpower + 445 * 1.4) / 14) * 1.1 * // Talent: Weapon Mastery
   ARMOR_MULTIPLIER * target.multipliers.physical;
   var OH_WINDFURY_DAMAGE = (OH_WEAPON_DAMAGE * 0.5 + AP_COEFFICIENT * (stats.attackpower + 445 * 1.4) / 14) * 1.1 * // Talent: Weapon Mastery
@@ -111,8 +126,8 @@ var _default = function _default(_ref) {
   var OH_WINDFURY_HIT_COMPONENT = YELLOW_HIT_CHANCE * (1 - ATTACK_TABLE_YELLOW_OH.crit) * OH_WINDFURY_DAMAGE;
   var MH_WINDFURY_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_MH.crit * MH_WINDFURY_DAMAGE * 2;
   var OH_WINDFURY_CRIT_COMPONENT = YELLOW_HIT_CHANCE * ATTACK_TABLE_YELLOW_OH.crit * OH_WINDFURY_DAMAGE * 2;
-  var MH_WINDFURY_DPS = MH_EXTRA_ATTACKS_WINDFURY_TOTEM * (MH_WINDFURY_HIT_COMPONENT + MH_WINDFURY_CRIT_COMPONENT) * 2 / ROTATION_DURATION_SECONDS;
-  var OH_WINDFURY_DPS = OH_EXTRA_ATTACKS_WINDFURY_TOTEM * (OH_WINDFURY_HIT_COMPONENT + OH_WINDFURY_CRIT_COMPONENT) * 2 / ROTATION_DURATION_SECONDS;
+  var MH_WINDFURY_DPS = MH_EXTRA_ATTACKS_WINDFURY * (MH_WINDFURY_HIT_COMPONENT + MH_WINDFURY_CRIT_COMPONENT) * 2 / ROTATION_DURATION_SECONDS;
+  var OH_WINDFURY_DPS = OH_EXTRA_ATTACKS_WINDFURY * (OH_WINDFURY_HIT_COMPONENT + OH_WINDFURY_CRIT_COMPONENT) * 2 / ROTATION_DURATION_SECONDS;
   var WHITE_DPS = MH_WHITE_DPS + OH_WHITE_DPS + MH_WINDFURY_DPS + OH_WINDFURY_DPS;
   var EARTH_SHOCK_DAMAGE = (_abilities.default.earthshock.damage + _abilities.default.earthshock.coefficient * stats.spelldamage) * 1.2 * // Stormstrike
   target.multipliers.nature;
